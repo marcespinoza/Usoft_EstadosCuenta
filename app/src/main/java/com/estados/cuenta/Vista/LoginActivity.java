@@ -87,7 +87,9 @@ public class LoginActivity extends AppCompatActivity implements LoginInterface.V
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                loginUsuario(usuario.getText().toString(), clave.getText().toString());
+                Intent intent = new Intent(LoginActivity.this, CuentaActivity.class);
+                startActivity(intent);
+               /* loginUsuario(usuario.getText().toString(), clave.getText().toString());*/
             }
         });
         if(sesion){

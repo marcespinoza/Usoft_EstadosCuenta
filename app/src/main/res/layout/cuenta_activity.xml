@@ -124,7 +124,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
+            android:textSize="15sp"
             android:text="CLIENTE:"/>
 
         <AutoCompleteTextView
@@ -132,7 +132,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textSize="20sp"/>
+            android:textSize="15sp"/>
 
         <ImageButton
             android:id="@+id/cleancliente"
@@ -161,15 +161,25 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
-        android:textSize="20sp"
-        android:hint="Descripción"/>
+        android:textSize="15sp"
+        android:hint="DESCRIPCION"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:enabled="false"/>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
-        android:textSize="20sp"
-        android:hint="Razón social"/>
+        android:textSize="15sp"
+        android:hint="RAZON SOCIAL"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:enabled="false"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -179,7 +189,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
+            android:textSize="15sp"
             android:text="RUBRO:"/>
 
         <AutoCompleteTextView
@@ -217,8 +227,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
-        android:textSize="20sp"
-        android:hint="Descripción"/>
+        android:textSize="15sp"
+        android:hint="DESCRIPCION"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:enabled="false"/>
 
     <RadioGroup
         android:id="@+id/radioGroup1"
@@ -232,14 +247,14 @@
             android:id="@+id/radio0"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
+            android:textSize="15sp"
             android:text="Total" />
 
         <RadioButton
             android:id="@+id/radio1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
+            android:textSize="15sp"
             android:text="Pendiente" />
 
     </RadioGroup>
@@ -255,19 +270,22 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="10dp"
-            android:textSize="20sp"
+            android:textSize="15sp"
             android:text="Fecha inicial"/>
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/inicialDate"
             android:layout_width="100dp"
+            android:enabled="false"
             android:layout_height="wrap_content"/>
 
         <ImageButton
             android:id="@+id/calendarioinicial"
+            android:layout_gravity="center_vertical"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:background="@drawable/ic_calendar"/>
+            android:background="@drawable/ic_calendar"
+            android:foreground="?attr/selectableItemBackgroundBorderless"/>
 
     </LinearLayout>
 
@@ -281,18 +299,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="10dp"
-            android:textSize="20sp"
+            android:textSize="15sp"
             android:text="Fecha final"/>
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/finalDate"
             android:layout_width="100dp"
+            android:enabled="false"
             android:layout_height="wrap_content"/>
 
         <ImageButton
             android:id="@+id/calendariofinal"
             android:layout_width="30dp"
             android:layout_height="30dp"
+            android:layout_gravity="center_vertical"
             android:background="@drawable/ic_calendar"/>
 
     </LinearLayout>
