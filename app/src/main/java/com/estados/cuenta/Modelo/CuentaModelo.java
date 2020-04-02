@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 
 import com.estados.cuenta.Interface.CuentaInterface;
 import com.estados.cuenta.Pojo.Cliente;
+import com.estados.cuenta.Pojo.Rubro;
 import com.estados.cuenta.Vista.GlobalApplication;
 
 import org.json.JSONArray;
@@ -32,10 +33,6 @@ public class CuentaModelo implements CuentaInterface.CuentaModelo {
     Cliente cli;
     String urlServidor = "";
 
-    @Override
-    public void buscarCliente(String cliente) {
-            getCliente(cliente);
-    }
 
     public CuentaModelo(CuentaInterface.CuentaPresentador cPresentador) {
         this.cPresentador = cPresentador;
@@ -45,6 +42,71 @@ public class CuentaModelo implements CuentaInterface.CuentaModelo {
         urlServidor = sharedPrefConexion.getString("host","");
     }
 
+
+    @Override
+    public void buscarCliente(String cliente) {
+        getCliente(cliente);
+    }
+
+    @Override
+    public void buscarRubro(String rubro) {
+        getRubrosDesc(rubro);
+    }
+
+    public void getRubrosDesc(String nrocuenta) {
+        urlServidor = sharedPrefConexion.getString("host","");
+        String empresa = sharedPrefConexion.getString("empresa","");
+        String url = "http://"+urlServidor+":10701/api/index.php/api/getrubros";
+        OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(20, TimeUnit.SECONDS)
+                .readTimeout(20, TimeUnit.SECONDS)
+                .writeTimeout(20, TimeUnit.SECONDS).build();
+        RequestBody formBody = new FormBody.Builder()
+                .add("nrocuenta", nrocuenta)
+                .add("empresa",empresa)
+                .build();
+        Request request = new Request.Builder()
+                .url(url)
+                .post(formBody)
+                .build();
+
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                 cPresentador.mostrarMensaje(e.getMessage());
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+
+                String mMessage = response.body().string();
+                try {
+                    JSONObject json = new JSONObject(mMessage);
+                    String mensaje = json.getString("mensaje");
+                    if (mensaje.equals("false")) {
+                        cPresentador.mostrarMensaje("No se encontró rubro");
+                    } else {
+                        JSONObject object;
+                        JSONArray jsonArray = (JSONArray) json.get("0");
+                        ArrayList<Rubro> lRubros = new ArrayList<>();
+                        for(int i=0; i < jsonArray.length(); i++){
+                            object = jsonArray.getJSONObject(i);
+                            Rubro rub = new Rubro();
+                            String rubro = object.getString("rubro");
+                            String descripcion = object.getString("descripcion");
+                            rub.setNombre(rubro);
+                            rub.setDescripcion(descripcion);
+                            lRubros.add(rub);
+                        }
+                        cPresentador.descripcionRubros(lRubros);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
 
     public void getCliente(String cliente) {
         urlServidor = sharedPrefConexion.getString("host","");
@@ -67,7 +129,7 @@ public class CuentaModelo implements CuentaInterface.CuentaModelo {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                 cPresentador.mostrarMensaje(e.getMessage());
+                cPresentador.mostrarMensaje(e.getMessage());
             }
 
             @Override

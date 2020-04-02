@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Estados de cuenta</string>
+    <string-array name="rubros">
+
+    <item>Rubros</item>
+        <item>Rubros2</item>
+    </string-array>
 </resources>

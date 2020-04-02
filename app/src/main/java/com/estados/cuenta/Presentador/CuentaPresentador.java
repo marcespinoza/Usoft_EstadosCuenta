@@ -2,6 +2,7 @@ package com.estados.cuenta.Presentador;
 
 import com.estados.cuenta.Interface.CuentaInterface;
 import com.estados.cuenta.Modelo.CuentaModelo;
+import com.estados.cuenta.Pojo.Rubro;
 import com.estados.cuenta.Vista.CuentaActivity;
 
 import java.util.ArrayList;
@@ -29,5 +30,15 @@ public class CuentaPresentador implements CuentaInterface.CuentaPresentador {
     @Override
     public void mostrarMensaje(String mensaje) {
 
+    }
+
+    @Override
+    public void enviarRubro(String rubro) {
+        cModelo.buscarRubro(rubro);
+    }
+
+    @Override
+    public void descripcionRubros(ArrayList<Rubro> lRubros) {
+        cVista.mostrarDescripcionRubro(lRubros);
     }
 }
