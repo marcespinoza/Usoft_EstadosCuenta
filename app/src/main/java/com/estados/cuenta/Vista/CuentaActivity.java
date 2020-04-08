@@ -1,7 +1,9 @@
 package com.estados.cuenta.Vista;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
@@ -9,24 +11,30 @@ import android.text.TextWatcher;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatSpinner;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.estados.cuenta.Adapter.AutoCompleteClienteAdapter;
+import com.estados.cuenta.Adapter.MovimientoAdapter;
 import com.estados.cuenta.Adapter.SpinnerRubroAdapter;
 import com.estados.cuenta.Interface.CuentaInterface;
+import com.estados.cuenta.Pojo.ListItem;
 import com.estados.cuenta.Pojo.Cliente;
 import com.estados.cuenta.Pojo.Rubro;
 import com.estados.cuenta.Presentador.CuentaPresentador;
 import com.estados.cuenta.R;
+import com.google.android.material.button.MaterialButton;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -46,7 +54,8 @@ public class CuentaActivity extends AppCompatActivity implements CuentaInterface
     @BindView(R.id.razonsocial) EditText razonsocial;
     @BindView(R.id.cleancliente) ImageButton limpiarCliente;
     @BindView(R.id.rubro_spinner) AppCompatSpinner rSpinner;
-    @BindView(R.id.descripcion_rubro) EditText descRubro;
+    @BindView(R.id.radiogroup) RadioGroup radioGroup;
+    @BindView(R.id.buscar) MaterialButton buscar;
     private int mYear, mMonth, mDay, mHour, mMinute;
     public CuentaInterface.CuentaPresentador cPresentador;
     ProgressDialog pdialog;
@@ -61,6 +70,7 @@ public class CuentaActivity extends AppCompatActivity implements CuentaInterface
         ButterKnife.bind(this);
         lRubros.add(new Rubro("Rubro","Rubro"));
         pdialog = new ProgressDialog(this);
+        buscar.setEnabled(false);
         sharedPref = getSharedPreferences("datosesion", Context.MODE_PRIVATE);
         cPresentador = new CuentaPresentador(this);
         spinnerRubroAdapter = new SpinnerRubroAdapter(this, R.layout.spinner, lRubros);
@@ -115,12 +125,26 @@ public class CuentaActivity extends AppCompatActivity implements CuentaInterface
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 Rubro rubro = spinnerRubroAdapter.getItem(i);
-                descRubro.setText(rubro.getDescripcion());
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
 
+            }
+        });
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+
+                switch (checkedId) {
+                    case R.id.radiototal:
+                        cFinal.setEnabled(true);
+                        break;
+                    case R.id.radiopendiente:
+                        cFinal.setEnabled(false);
+                        break;
+                }
             }
         });
     }
@@ -130,6 +154,7 @@ public class CuentaActivity extends AppCompatActivity implements CuentaInterface
         descripcion.setText("");
         razonsocial.setText("");
         spinnerRubroAdapter.clear();
+        buscar.setEnabled(false);
         spinnerRubroAdapter.add(new Rubro("Rubro","Rubro"));
     }
 
@@ -137,18 +162,31 @@ public class CuentaActivity extends AppCompatActivity implements CuentaInterface
         cPresentador.enviarRubro(rubro);
     }
 
-    @OnClick(R.id.calendarioinicial)
-    public void showCalendar(){
+    @OnClick(R.id.buscar)
+    public void movimientos(){
+        pdialog.showProgressDialog("Obteniendo movimientos");
+        Rubro rubro = (Rubro) rSpinner.getSelectedItem();
+        cPresentador.obtenerMovimientos(autocompleteCliente.getText().toString(), rubro.getNombre());
+    }
+
+    @OnClick({R.id.calendarioinicial, R.id.calendariofinal})
+    public void showCalendar(View v){
         final Calendar c = Calendar.getInstance();
         mYear = c.get(Calendar.YEAR);
         mMonth = c.get(Calendar.MONTH);
         mDay = c.get(Calendar.DAY_OF_MONTH);
-
-
-        DatePickerDialog datePickerDialog = new DatePickerDialog(this,
-                (view, year, monthOfYear, dayOfMonth) -> iDate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year), mYear, mMonth, mDay);
+        DatePickerDialog datePickerDialog = null;
+        switch(v.getId()){
+            case R.id.calendarioinicial:
+                datePickerDialog = new DatePickerDialog(this,(view, year, monthOfYear, dayOfMonth) -> iDate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year), mYear, mMonth, mDay);
+                break;
+            case R.id.calendariofinal:
+                datePickerDialog = new DatePickerDialog(this,(view, year, monthOfYear, dayOfMonth) -> fDate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year), mYear, mMonth, mDay);
+                break;
+        }
         datePickerDialog.show();
     }
+
 
     public void enviarCliente(String cliente){
         runOnUiThread(new Runnable() {
@@ -180,6 +218,7 @@ public class CuentaActivity extends AppCompatActivity implements CuentaInterface
                         descripcion.setText(cliente.getNombre());
                         razonsocial.setText(cliente.getRazonsocial());
                         autocompleteCliente.requestFocus();
+                        buscar.setEnabled(true);
                         buscarDescripcionRubros(cliente.getNrocuenta());
                         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                         imm.showSoftInput(autocompleteCliente, InputMethodManager.SHOW_IMPLICIT);
@@ -200,5 +239,15 @@ public class CuentaActivity extends AppCompatActivity implements CuentaInterface
                 spinnerRubroAdapter.addAll(lRubros);
             }
         });
+    }
+
+    @Override
+    public void mostrarMovimientos(ArrayList<ListItem> cuentas) {
+        pdialog.finishDialog();
+        Intent intent = new Intent(this, MovimientoActivity.class);
+        Bundle args = new Bundle();
+        args.putSerializable("MOVIMIENTOS",(Serializable)cuentas);
+        intent.putExtra("BUNDLE",args);
+        startActivity(intent);
     }
 }

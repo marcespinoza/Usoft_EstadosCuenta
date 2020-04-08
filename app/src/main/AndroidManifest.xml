@@ -21,6 +21,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".Vista.CuentaActivity"/>
+        <activity android:name=".Vista.MovimientoActivity"/>
     </application>
 
 </manifest>

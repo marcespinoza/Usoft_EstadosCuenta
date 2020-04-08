@@ -205,24 +205,12 @@
        android:spinnerMode="dropdown"
        style="@style/SpinnerTheme"/>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:textSize="15sp"
-        android:hint="DESCRIPCION"/>
-
-    <EditText
-        android:id="@+id/descripcion_rubro"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:enabled="false"/>
-
 </LinearLayout>
 
  </androidx.cardview.widget.CardView>
 
     <LinearLayout
+        android:id="@+id/calendars_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/cardview"
@@ -230,7 +218,7 @@
         android:padding="10dp">
 
     <RadioGroup
-        android:id="@+id/radioGroup1"
+        android:id="@+id/radiogroup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
@@ -238,14 +226,15 @@
         android:orientation="horizontal" >
 
         <RadioButton
-            android:id="@+id/radio0"
+            android:id="@+id/radiototal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:checked="true"
             android:textSize="15sp"
             android:text="Total" />
 
         <RadioButton
-            android:id="@+id/radio1"
+            android:id="@+id/radiopendiente"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="15sp"
@@ -278,7 +267,7 @@
             android:layout_gravity="center_vertical"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:background="@drawable/ic_calendar"
+            android:background="@drawable/calendar_background"
             android:foreground="?attr/selectableItemBackgroundBorderless"/>
 
     </LinearLayout>
@@ -307,21 +296,23 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_gravity="center_vertical"
-            android:background="@drawable/ic_calendar"/>
+            android:background="@drawable/calendar_background"
+            android:foreground="?attr/selectableItemBackgroundBorderless"/>
 
     </LinearLayout>
 
-
 </LinearLayout>
 
+        android:layout_marginRight="10dp"/>
+
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/enviar"
+        android:id="@+id/buscar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_gravity="center_horizontal|bottom"
         android:layout_margin="8dp"
-        android:text="ENVIAR"
+        android:text="BUSCAR"
         android:textColor="@color/white"
         app:backgroundTint="@color/button_color_states"
         app:backgroundTintMode="multiply"

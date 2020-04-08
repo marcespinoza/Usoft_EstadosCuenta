@@ -22,7 +22,7 @@ public class SpinnerRubroAdapter extends ArrayAdapter<Rubro> {
     public View getView(int position, View convertView, ViewGroup parent) {
         TextView label = (TextView) super.getView(position, convertView, parent);
         label.setTextColor(Color.BLACK);
-        label.setText(this.getItem(position).getNombre());
+        label.setText(this.getItem(position).getDescripcion());
         return label;
     }
 
@@ -30,7 +30,7 @@ public class SpinnerRubroAdapter extends ArrayAdapter<Rubro> {
     public View getDropDownView(int position, View convertView,ViewGroup parent) {
         TextView label = (TextView) super.getView(position, convertView, parent);
         label.setTextColor(Color.BLACK);
-        label.setText(this.getItem(position).getNombre());
+        label.setText(this.getItem(position).getDescripcion());
         return label;
     }
 }

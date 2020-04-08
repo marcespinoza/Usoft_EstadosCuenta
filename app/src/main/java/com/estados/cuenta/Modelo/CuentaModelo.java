@@ -4,7 +4,10 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.estados.cuenta.Interface.CuentaInterface;
+import com.estados.cuenta.Pojo.ListItem;
 import com.estados.cuenta.Pojo.Cliente;
+import com.estados.cuenta.Pojo.CuentaHeader;
+import com.estados.cuenta.Pojo.CuentaItem;
 import com.estados.cuenta.Pojo.Rubro;
 import com.estados.cuenta.Vista.GlobalApplication;
 
@@ -51,6 +54,11 @@ public class CuentaModelo implements CuentaInterface.CuentaModelo {
     @Override
     public void buscarRubro(String rubro) {
         getRubrosDesc(rubro);
+    }
+
+    @Override
+    public void obtenerMovimientos(String nrocuenta, String rubro) {
+        getMovimientos(nrocuenta, rubro);
     }
 
     public void getRubrosDesc(String nrocuenta) {
@@ -171,5 +179,74 @@ public class CuentaModelo implements CuentaInterface.CuentaModelo {
         });
     }
 
+    public void getMovimientos(String nrocuenta, String rubro) {
+        urlServidor = sharedPrefConexion.getString("host","");
+        String empresa = sharedPrefConexion.getString("empresa","");
+        String url = "http://"+urlServidor+":10701/api/index.php/api/getmovimientos";
+        OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(20, TimeUnit.SECONDS)
+                .readTimeout(20, TimeUnit.SECONDS)
+                .writeTimeout(20, TimeUnit.SECONDS).build();
+        RequestBody formBody = new FormBody.Builder()
+                .add("nrocuenta", nrocuenta)
+                .add("rubro", rubro)
+                .add("empresa","aromacos")
+                .build();
+        Request request = new Request.Builder()
+                .url(url)
+                .post(formBody)
+                .build();
+
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                cPresentador.mostrarMensaje(e.getMessage());
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+
+                String mMessage = response.body().string();
+                try {
+                    JSONObject json = new JSONObject(mMessage);
+                    String mensaje = json.getString("mensaje");
+                    if (mensaje.equals("false")) {
+                        cPresentador.mostrarMensaje("No se encontraron moviemientos");
+                    } else {
+                        JSONObject object;
+                        JSONArray jsonArray = (JSONArray) json.get("0");
+                        ArrayList<ListItem> cuentaList = new ArrayList<>();
+                        String moneda = "";
+                        for(int i=0; i < jsonArray.length(); i++){
+                            object = jsonArray.getJSONObject(i);
+                            String moneda_ = object.getString("moneda");
+                            if(!moneda.equals(moneda_)){
+                                moneda = moneda_;
+                                CuentaHeader ch;
+                                if(moneda.equals("1")){
+                                    ch = new CuentaHeader("U$S");
+                                }else{
+                                    ch = new CuentaHeader("$");
+                                }
+                                cuentaList.add(ch);
+                            }
+                            CuentaItem ci = new CuentaItem();
+                            String fecha = object.getString("fecha");
+                            String importe = object.getString("importetotal");
+                            String saldo = object.getString("sub_importetotal");
+                            ci.setFecha(fecha);
+                            ci.setImporte(importe);
+                            ci.setSaldo(saldo);
+                            cuentaList.add(ci);
+                        }
+                        cPresentador.retornarMovimientos(cuentaList);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
 
 }
