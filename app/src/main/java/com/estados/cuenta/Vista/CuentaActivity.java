@@ -2,9 +2,11 @@ package com.estados.cuenta.Vista;
 
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -12,20 +14,25 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatSpinner;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.estados.cuenta.Adapter.AutoCompleteClienteAdapter;
 import com.estados.cuenta.Adapter.MovimientoAdapter;
 import com.estados.cuenta.Adapter.SpinnerRubroAdapter;
+import com.estados.cuenta.BuildConfig;
 import com.estados.cuenta.Interface.CuentaInterface;
 import com.estados.cuenta.Pojo.ListItem;
 import com.estados.cuenta.Pojo.Cliente;
@@ -35,8 +42,10 @@ import com.estados.cuenta.R;
 import com.google.android.material.button.MaterialButton;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -55,19 +64,27 @@ public class CuentaActivity extends AppCompatActivity implements CuentaInterface
     @BindView(R.id.cleancliente) ImageButton limpiarCliente;
     @BindView(R.id.rubro_spinner) AppCompatSpinner rSpinner;
     @BindView(R.id.radiogroup) RadioGroup radioGroup;
+    @BindView(R.id.radiototal) RadioButton radioTotal;
+    @BindView(R.id.radiopendiente) RadioButton radioPendiente;
     @BindView(R.id.buscar) MaterialButton buscar;
+    @BindView(R.id.androidversion2) TextView androidversion;
+    @BindView(R.id.versionname2) TextView versionname;
+    String nrocuenta = "";
     private int mYear, mMonth, mDay, mHour, mMinute;
     public CuentaInterface.CuentaPresentador cPresentador;
     ProgressDialog pdialog;
     SharedPreferences sharedPref;
     SpinnerRubroAdapter spinnerRubroAdapter;
     ArrayList<Rubro> lRubros = new ArrayList<>();
+    private DataFragment dataFragment;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.cuenta_activity);
         ButterKnife.bind(this);
+        androidversion.setText(android.os.Build.VERSION.RELEASE.substring(0, 1));
+        versionname.setText(BuildConfig.VERSION_NAME);
         lRubros.add(new Rubro("Rubro","Rubro"));
         pdialog = new ProgressDialog(this);
         buscar.setEnabled(false);
@@ -139,14 +156,30 @@ public class CuentaActivity extends AppCompatActivity implements CuentaInterface
 
                 switch (checkedId) {
                     case R.id.radiototal:
-                        cFinal.setEnabled(true);
+                        cInicial.setEnabled(true);
+                        changeBorder();
                         break;
                     case R.id.radiopendiente:
-                        cFinal.setEnabled(false);
+                        cInicial.setEnabled(false);
+                        iDate.setText("");
+                        changeBorder();
                         break;
                 }
             }
         });
+        setDate();
+    }
+
+    public void changeBorder(){
+        iDate.setBackgroundColor(Color.TRANSPARENT);
+        fDate.setBackgroundColor(Color.TRANSPARENT);
+    }
+
+    private void setDate(){
+        Date c = Calendar.getInstance().getTime();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String formattedDate = simpleDateFormat.format(c);
+        fDate.setText(formattedDate);
     }
 
     public void limpiarDetalle(){
@@ -154,6 +187,8 @@ public class CuentaActivity extends AppCompatActivity implements CuentaInterface
         descripcion.setText("");
         razonsocial.setText("");
         spinnerRubroAdapter.clear();
+        iDate.setText("");
+        fDate.setText("");
         buscar.setEnabled(false);
         spinnerRubroAdapter.add(new Rubro("Rubro","Rubro"));
     }
@@ -164,9 +199,44 @@ public class CuentaActivity extends AppCompatActivity implements CuentaInterface
 
     @OnClick(R.id.buscar)
     public void movimientos(){
-        pdialog.showProgressDialog("Obteniendo movimientos");
-        Rubro rubro = (Rubro) rSpinner.getSelectedItem();
-        cPresentador.obtenerMovimientos(autocompleteCliente.getText().toString(), rubro.getNombre());
+        if(radioTotal.isChecked()){
+            if(checkTotal()){
+                pdialog.showProgressDialog("Obteniendo movimientos");
+                Rubro rubro = (Rubro) rSpinner.getSelectedItem();
+                cPresentador.obtenerMovimientos(nrocuenta, rubro.getNombre(), iDate.getText().toString(), fDate.getText().toString(), true);
+            }
+        }else if(radioPendiente.isChecked()){
+            if(checkPendiente()){
+                pdialog.showProgressDialog("Obteniendo movimientos");
+                Rubro rubro = (Rubro) rSpinner.getSelectedItem();
+                cPresentador.obtenerMovimientos(nrocuenta, rubro.getNombre(), iDate.getText().toString(), fDate.getText().toString(), false);
+            }
+        }
+    }
+
+    public boolean checkTotal(){
+        if(!iDate.getText().toString().isEmpty() && !fDate.getText().toString().isEmpty()){
+            iDate.setBackgroundResource(android.R.color.transparent);
+            fDate.setBackgroundResource(android.R.color.transparent);
+            return true;
+        }else{
+            if(iDate.getText().toString().isEmpty()){
+                iDate.setBackgroundResource(R.drawable.red_border);
+            }
+            if(fDate.getText().toString().isEmpty()){
+                fDate.setBackgroundResource(R.drawable.red_border);
+            }
+            return false;
+        }
+    }
+
+    public boolean checkPendiente(){
+        if(fDate.getText().toString().isEmpty()){
+            fDate.setBackgroundResource(R.drawable.red_border);
+            return false;
+        }else{
+            return true;
+        }
     }
 
     @OnClick({R.id.calendarioinicial, R.id.calendariofinal})
@@ -178,15 +248,41 @@ public class CuentaActivity extends AppCompatActivity implements CuentaInterface
         DatePickerDialog datePickerDialog = null;
         switch(v.getId()){
             case R.id.calendarioinicial:
-                datePickerDialog = new DatePickerDialog(this,(view, year, monthOfYear, dayOfMonth) -> iDate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year), mYear, mMonth, mDay);
+/*
+                datePickerDialog = new DatePickerDialog(this,(view, year, monthOfYear, dayOfMonth) -> iDate.setText(year + "-" + (monthOfYear + 1) + "-" + dayOfMonth), mYear, mMonth, mDay);
+*/
+                datePickerDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                        iDate.setText(year + "-" + (monthOfYear + 1) + "-" + dayOfMonth);
+                        iDate.setBackgroundColor(Color.TRANSPARENT);
+                    }
+                }, mYear, mMonth, mDay);
+                datePickerDialog.show();
                 break;
             case R.id.calendariofinal:
-                datePickerDialog = new DatePickerDialog(this,(view, year, monthOfYear, dayOfMonth) -> fDate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year), mYear, mMonth, mDay);
+                datePickerDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                        fDate.setText(year + "-" + (monthOfYear + 1) + "-" + dayOfMonth);
+                        fDate.setBackgroundColor(Color.TRANSPARENT);
+                    }
+                }, mYear, mMonth, mDay);
+                datePickerDialog.show();
                 break;
         }
         datePickerDialog.show();
     }
 
+    @OnClick(R.id.logout)
+    public void logout(){
+        SharedPreferences.Editor editor =  sharedPref.edit();
+        editor.putBoolean("sesion",false);
+        editor.commit();
+        Intent i = new Intent(CuentaActivity.this, LoginActivity.class);
+        startActivity(i);
+        finish();
+    }
 
     public void enviarCliente(String cliente){
         runOnUiThread(new Runnable() {
@@ -199,7 +295,12 @@ public class CuentaActivity extends AppCompatActivity implements CuentaInterface
 
     @Override
     public void mostrarToast(String mensaje) {
-
+        pdialog.finishDialog();
+        runOnUiThread(new Runnable() {
+            public void run() {
+                Toast.makeText(CuentaActivity.this, mensaje, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
@@ -217,11 +318,12 @@ public class CuentaActivity extends AppCompatActivity implements CuentaInterface
                         Cliente cliente = (Cliente) adapterView.getItemAtPosition(i);
                         descripcion.setText(cliente.getNombre());
                         razonsocial.setText(cliente.getRazonsocial());
+                        nrocuenta = cliente.getNrocuenta();
                         autocompleteCliente.requestFocus();
                         buscar.setEnabled(true);
                         buscarDescripcionRubros(cliente.getNrocuenta());
-                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                        imm.showSoftInput(autocompleteCliente, InputMethodManager.SHOW_IMPLICIT);
+                        InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+                        imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
                     }
                 });
             }
@@ -245,9 +347,42 @@ public class CuentaActivity extends AppCompatActivity implements CuentaInterface
     public void mostrarMovimientos(ArrayList<ListItem> cuentas) {
         pdialog.finishDialog();
         Intent intent = new Intent(this, MovimientoActivity.class);
-        Bundle args = new Bundle();
-        args.putSerializable("MOVIMIENTOS",(Serializable)cuentas);
-        intent.putExtra("BUNDLE",args);
+        GlobalApplication.getInstance().setCuentas(cuentas);
+        Rubro rubro = (Rubro) rSpinner.getSelectedItem();
+        ArrayList<String> lDescripcion = new ArrayList<>();
+        lDescripcion.add(nrocuenta);
+        lDescripcion.add(descripcion.getText().toString());
+        lDescripcion.add(razonsocial.getText().toString());
+        lDescripcion.add(rubro.getNombre());
+        intent.putStringArrayListExtra("header",lDescripcion);
         startActivity(intent);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle InstanceState) {
+        super.onSaveInstanceState(InstanceState);
+        InstanceState.clear();
+    }
+
+    public class DataFragment extends Fragment {
+
+        // data object we want to retain
+        ArrayList<ListItem> cuentas;
+
+        // this method is only called once for this fragment
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            // retain this fragment
+            setRetainInstance(true);
+        }
+
+        public void setData(ArrayList<ListItem> cuentas) {
+            this.cuentas = cuentas;
+        }
+
+        public ArrayList<ListItem> getData() {
+            return cuentas;
+        }
     }
 }

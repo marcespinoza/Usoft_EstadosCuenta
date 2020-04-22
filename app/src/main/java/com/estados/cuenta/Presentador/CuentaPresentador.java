@@ -30,7 +30,7 @@ public class CuentaPresentador implements CuentaInterface.CuentaPresentador {
 
     @Override
     public void mostrarMensaje(String mensaje) {
-
+        cVista.mostrarToast(mensaje);
     }
 
     @Override
@@ -44,8 +44,8 @@ public class CuentaPresentador implements CuentaInterface.CuentaPresentador {
     }
 
     @Override
-    public void obtenerMovimientos(String nrocuenta, String rubro) {
-        cModelo.obtenerMovimientos(nrocuenta, rubro);
+    public void obtenerMovimientos(String nrocuenta, String rubro, String f_inicial, String f_final, boolean b) {
+        cModelo.obtenerMovimientos(nrocuenta, rubro, f_inicial, f_final, b);
     }
 
     @Override

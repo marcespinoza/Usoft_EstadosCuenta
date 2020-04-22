@@ -18,7 +18,7 @@
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="?attr/actionBarSize"
             android:background="@color/white" >
 
 
@@ -56,7 +56,7 @@
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="-10dp"
+                            android:layout_marginTop="-8dp"
                             android:orientation="horizontal">
 
                             <TextView
@@ -100,6 +100,17 @@
 
                 </LinearLayout>
 
+                <ImageButton
+                    android:id="@+id/logout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_margin="10dp"
+                    android:layout_marginRight="10dp"
+                    android:background="@color/white"
+                    android:layout_alignParentRight="true"
+                    android:src="@drawable/ic_logout"/>
+
             </RelativeLayout>
 
         </androidx.appcompat.widget.Toolbar>
@@ -132,8 +143,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="15sp"
-            android:text="CLIENTE:"/>
+            android:text="CLIENTE:"
+            android:textSize="15sp" />
 
         <AutoCompleteTextView
             android:id="@+id/cliente"
@@ -177,6 +188,7 @@
         android:id="@+id/descripcion"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textSize="14sp"
         android:textColor="@color/black"
         android:enabled="false"/>
 
@@ -191,6 +203,7 @@
         android:id="@+id/razonsocial"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textSize="14sp"
         android:textColor="@color/black"
         android:enabled="false"/>
 
@@ -245,7 +258,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="10dp"
         android:gravity="center_horizontal"
         android:orientation="horizontal">
 
@@ -259,6 +272,7 @@
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/inicialDate"
             android:layout_width="100dp"
+            android:layout_marginRight="5dp"
             android:enabled="false"
             android:layout_height="wrap_content"/>
 
@@ -288,6 +302,7 @@
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/finalDate"
             android:layout_width="100dp"
+            android:layout_marginRight="5dp"
             android:enabled="false"
             android:layout_height="wrap_content"/>
 

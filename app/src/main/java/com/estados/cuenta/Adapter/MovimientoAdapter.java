@@ -50,6 +50,9 @@ public class MovimientoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             CuentaItem cuentaItem = (CuentaItem) lcuentas.get(position);
             MovimientoHolder movimientoHolder = (MovimientoHolder) holder;
             movimientoHolder.fecha.setText(cuentaItem.getFecha());
+            movimientoHolder.tdoc.setText(cuentaItem.getTdoc());
+            movimientoHolder.serie.setText(cuentaItem.getSerie());
+            movimientoHolder.numerodoc.setText(cuentaItem.getNumerodoc());
             movimientoHolder.importe.setText(cuentaItem.getImporte());
             movimientoHolder.saldo.setText(cuentaItem.getSaldo());
 
@@ -75,12 +78,18 @@ public class MovimientoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     public class MovimientoHolder extends RecyclerView.ViewHolder{
 
         TextView fecha;
+        TextView tdoc;
+        TextView serie;
+        TextView numerodoc;
         TextView importe;
         TextView saldo;
 
         public MovimientoHolder(@NonNull View itemView) {
             super(itemView);
             fecha = itemView.findViewById(R.id.fecha);
+            tdoc = itemView.findViewById(R.id.tipodoc);
+            serie = itemView.findViewById(R.id.serie);
+            numerodoc = itemView.findViewById(R.id.numerodoc);
             importe = itemView.findViewById(R.id.importe);
             saldo = itemView.findViewById(R.id.saldo);
         }

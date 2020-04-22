@@ -9,9 +9,35 @@ public class CuentaItem extends ListItem implements Serializable {
 
     String moneda;
     String fecha;
+    String tdoc;
+    String serie;
+    String numerodoc;
     String importe;
     String saldo;
 
+    public String getTdoc() {
+        return tdoc;
+    }
+
+    public void setTdoc(String tdoc) {
+        this.tdoc = tdoc;
+    }
+
+    public String getSerie() {
+        return serie;
+    }
+
+    public void setSerie(String serie) {
+        this.serie = serie;
+    }
+
+    public String getNumerodoc() {
+        return numerodoc;
+    }
+
+    public void setNumerodoc(String numerodoc) {
+        this.numerodoc = numerodoc;
+    }
 
     public String getMoneda() {
         return moneda;

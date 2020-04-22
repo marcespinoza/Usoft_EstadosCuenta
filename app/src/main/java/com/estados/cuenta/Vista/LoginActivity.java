@@ -55,7 +55,6 @@ public class LoginActivity extends AppCompatActivity implements LoginInterface.V
     EditText empresaText;
     Dialog dialog;
     SharedPreferences sharedPref;
-    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

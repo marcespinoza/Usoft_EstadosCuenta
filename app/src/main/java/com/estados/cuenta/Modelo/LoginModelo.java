@@ -106,17 +106,17 @@ public class LoginModelo implements LoginInterface.Modelo {
         protected Boolean doInBackground(String... params) {
             try{
                 Class.forName("com.mysql.jdbc.Driver").newInstance();
-                Connection connection = DriverManager.getConnection("jdbc:mysql://usoft.selfip.info:5806/usoft_mobile?useUnicode=true", "usoft_mobile", "orHfV3Cib5YoJZmEq4");
-                String query = "SELECT host, habilitado FROM empresas WHERE empresa like '"+params[0]+"' and (sistema='AUTOCONSULTA' or sistema='LECTOR')";
+                Connection connection = DriverManager.getConnection("jdbc:mysql://usoftuy.ddns.net:5806/usoft_mobile?useUnicode=true", "usoft_mobile", "orHfV3Cib5YoJZmEq4");
+                String query = "SELECT host, habilitado FROM empresas WHERE empresa like '"+params[0]+"' and (sistema='ESTADOCUENTA')";
                 PreparedStatement stmt = connection.prepareStatement(query);
                 /* stmt.setString(1, params[0]);*/
                 ResultSet rs = stmt.executeQuery();
                 if(rs.next()){
                     String host = rs.getString(1);
-                    if(rs.getString(2).equals("N")){
+                    /*if(rs.getString(2).equals("N")){
                         bandera = "N";
                         return false;
-                    }
+                    }*/
                     SharedPreferences.Editor editor = sharedPref.edit();
                     editor.putString("empresa",params[0]);
                     editor.putString("host", host);

@@ -57,8 +57,8 @@ public class CuentaModelo implements CuentaInterface.CuentaModelo {
     }
 
     @Override
-    public void obtenerMovimientos(String nrocuenta, String rubro) {
-        getMovimientos(nrocuenta, rubro);
+    public void obtenerMovimientos(String nrocuenta, String rubro, String f_inicial, String f_final, boolean b) {
+        getMovimientos(nrocuenta, rubro, f_inicial, f_final, b);
     }
 
     public void getRubrosDesc(String nrocuenta) {
@@ -148,7 +148,7 @@ public class CuentaModelo implements CuentaInterface.CuentaModelo {
                     JSONObject json = new JSONObject(mMessage);
                     String mensaje = json.getString("mensaje");
                     if (mensaje.equals("false")) {
-                        cPresentador.mostrarMensaje("No se encontró articulo");
+                        cPresentador.mostrarMensaje("No se encontró cliente");
                     } else {
                         JSONObject object;
                         JSONArray jsonArray = (JSONArray) json.get("0");
@@ -179,10 +179,16 @@ public class CuentaModelo implements CuentaInterface.CuentaModelo {
         });
     }
 
-    public void getMovimientos(String nrocuenta, String rubro) {
+    public void getMovimientos(String nrocuenta, String rubro, String f_inicial, String f_final, boolean b) {
         urlServidor = sharedPrefConexion.getString("host","");
         String empresa = sharedPrefConexion.getString("empresa","");
-        String url = "http://"+urlServidor+":10701/api/index.php/api/getmovimientos";
+        String url = "";
+        if(b){
+            url = "http://"+urlServidor+":10701/api/index.php/api/getmovimientostotal";
+        }else{
+            url = "http://"+urlServidor+":10701/api/index.php/api/getmovimientospendiente";
+        }
+
         OkHttpClient client = new OkHttpClient.Builder()
                 .connectTimeout(20, TimeUnit.SECONDS)
                 .readTimeout(20, TimeUnit.SECONDS)
@@ -190,7 +196,9 @@ public class CuentaModelo implements CuentaInterface.CuentaModelo {
         RequestBody formBody = new FormBody.Builder()
                 .add("nrocuenta", nrocuenta)
                 .add("rubro", rubro)
-                .add("empresa","aromacos")
+                .add("empresa",empresa)
+                .add("fechainicial",f_inicial)
+                .add("fechafinal",f_final)
                 .build();
         Request request = new Request.Builder()
                 .url(url)
@@ -212,7 +220,7 @@ public class CuentaModelo implements CuentaInterface.CuentaModelo {
                     JSONObject json = new JSONObject(mMessage);
                     String mensaje = json.getString("mensaje");
                     if (mensaje.equals("false")) {
-                        cPresentador.mostrarMensaje("No se encontraron moviemientos");
+                        cPresentador.mostrarMensaje("No se encontraron movimientos");
                     } else {
                         JSONObject object;
                         JSONArray jsonArray = (JSONArray) json.get("0");
@@ -233,9 +241,15 @@ public class CuentaModelo implements CuentaInterface.CuentaModelo {
                             }
                             CuentaItem ci = new CuentaItem();
                             String fecha = object.getString("fecha");
+                            String tdoc = object.getString("tdoc");
+                            String serie = object.getString("serie");
+                            String numero = object.getString("numero");
                             String importe = object.getString("importetotal");
                             String saldo = object.getString("sub_importetotal");
                             ci.setFecha(fecha);
+                            ci.setTdoc(tdoc);
+                            ci.setSerie(serie);
+                            ci.setNumerodoc(numero);
                             ci.setImporte(importe);
                             ci.setSaldo(saldo);
                             cuentaList.add(ci);
