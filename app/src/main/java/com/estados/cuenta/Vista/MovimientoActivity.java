@@ -85,7 +85,7 @@ public class MovimientoActivity extends AppCompatActivity implements PdfInterfac
 
     @OnClick(R.id.pdf)
     public void generarPdf(){
-        pPresentador.sendList(lMovimientos);
+        pPresentador.sendList(lMovimientos, dataHeader);
     }
 
     @Override

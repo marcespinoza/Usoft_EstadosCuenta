@@ -1,6 +1,5 @@
 package com.estados.cuenta.Modelo;
 
-import android.graphics.fonts.Font;
 import android.os.Environment;
 import android.util.Log;
 
@@ -14,6 +13,7 @@ import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
 import com.itextpdf.text.Image;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
@@ -41,11 +41,11 @@ public class Pdf_modelo implements PdfInterface.PdfModelo {
     }
 
     @Override
-    public void generatePdf(ArrayList<ListItem> lCuentas) {
-        createPdf(lCuentas);
+    public void generatePdf(ArrayList<ListItem> lCuentas, ArrayList<String> dataHeader) {
+        createPdf(lCuentas, dataHeader);
     }
 
-    private void createPdf(ArrayList<ListItem> lMovimientos) {
+    private void createPdf(ArrayList<ListItem> lMovimientos, ArrayList<String> dataHeader) {
         // TODO Auto-generated method stub
         Document document = new com.itextpdf.text.Document(PageSize.A4);
         String filename = "";
@@ -64,12 +64,32 @@ public class Pdf_modelo implements PdfInterface.PdfModelo {
             PdfWriter.getInstance(document, fOut);
             //open the document
             document.open();
-
-            Paragraph p1 = new Paragraph("Movimientos");
+            Font font = new Font(Font.getFamily("TIMES_ROMAN"), 12,    Font.BOLD|Font.UNDERLINE);
+            Font header_font = new Font(Font.getFamily("TIMES_ROMAN"), 12,    Font.BOLD);
+            Font line_font = new Font(Font.getFamily("TIMES_ROMAN"), 12,    Font.NORMAL);
+            Paragraph p1 = new Paragraph("Movimientos", font);
             p1.setAlignment(Paragraph.ALIGN_CENTER);
             document.add(p1);
+            document.add( Chunk.NEWLINE );
+            //------Data header---//
+            Paragraph nro_cuenta = new Paragraph("Nro cuenta: "+dataHeader.get(0));
+            nro_cuenta.setAlignment(Paragraph.ALIGN_LEFT);
+            nro_cuenta.setFirstLineIndent(19f);
+            document.add(nro_cuenta);
+            Paragraph descripcion = new Paragraph("Descripcion: "+dataHeader.get(1));
+            descripcion.setAlignment(Paragraph.ALIGN_LEFT);
+            descripcion.setFirstLineIndent(19f);
+            document.add(descripcion);
+            Paragraph razon_social = new Paragraph("Razon social: "+dataHeader.get(2));
+            razon_social.setAlignment(Paragraph.ALIGN_LEFT);
+            razon_social.setFirstLineIndent(19f);
+            document.add(razon_social);
+            Paragraph rubro = new Paragraph("Rubro: "+dataHeader.get(3));
+            rubro.setAlignment(Paragraph.ALIGN_LEFT);
+            rubro.setFirstLineIndent(19f);
+            document.add(rubro);
 
-            float[] columnWidths = {2f, 1.5f, 1f, 1.5f, 2f, 2f};
+            float[] columnWidths = {2f, 2f, 1.5f, 1f, 1.5f, 2f, 2f};
             float[] column_header = {10f};
             //create PDF table with the given widths
             PdfPTable table = new PdfPTable(columnWidths);
@@ -83,22 +103,24 @@ public class Pdf_modelo implements PdfInterface.PdfModelo {
             for(int x=0; x<lMovimientos.size(); x++){
                 if(lMovimientos.get(x) instanceof CuentaItem){
                      CuentaItem cuentaItem = (CuentaItem) lMovimientos.get(x);
-                      insertCell(table, cuentaItem.getFecha(), Element.ALIGN_CENTER, 1, null);
-                      insertCell(table, cuentaItem.getTdoc(), Element.ALIGN_CENTER, 1, null);
-                      insertCell(table, cuentaItem.getSerie(), Element.ALIGN_CENTER, 1, null);
-                      insertCell(table, cuentaItem.getNumerodoc(), Element.ALIGN_CENTER, 1, null);
-                      insertCell(table, cuentaItem.getImporte(), Element.ALIGN_CENTER, 1, null);
-                      insertCell(table, cuentaItem.getSaldo(), Element.ALIGN_CENTER, 1, null);
+                      insertCell(table, cuentaItem.getFecha(), Element.ALIGN_CENTER, 1, line_font);
+                      insertCell(table, cuentaItem.getFecha(), Element.ALIGN_CENTER, 1, line_font);
+                      insertCell(table, cuentaItem.getTdoc(), Element.ALIGN_CENTER, 1, line_font);
+                      insertCell(table, cuentaItem.getSerie(), Element.ALIGN_CENTER, 1, line_font);
+                      insertCell(table, cuentaItem.getNumerodoc(), Element.ALIGN_CENTER, 1, line_font);
+                      insertCell(table, cuentaItem.getImporte(), Element.ALIGN_RIGHT, 1, line_font);
+                      insertCell(table, cuentaItem.getSaldo(), Element.ALIGN_RIGHT, 1, line_font);
                 }else{
                     CuentaHeader cuentaHeader = (CuentaHeader) lMovimientos.get(x);
-                    insertCell(table_header, cuentaHeader.getMoneda(), Element.ALIGN_CENTER, 1, null);
+                    insertCell(table_header, cuentaHeader.getMoneda(), Element.ALIGN_CENTER, 1, header_font);
                     paragraph.add(table_header);
-                    insertCell(table, "Fecha", Element.ALIGN_CENTER, 1, null);
-                    insertCell(table, "Tipo doc", Element.ALIGN_CENTER, 1, null);
-                    insertCell(table, "Serie", Element.ALIGN_CENTER, 1, null);
-                    insertCell(table, "Nro", Element.ALIGN_CENTER, 1, null);
-                    insertCell(table, "Importe", Element.ALIGN_CENTER, 1, null);
-                    insertCell(table, "Saldo", Element.ALIGN_CENTER, 1, null);
+                    insertCell(table, "Fecha", Element.ALIGN_CENTER, 1, header_font);
+                    insertCell(table, "Fecha Vto", Element.ALIGN_CENTER, 1, header_font);
+                    insertCell(table, "Tipo doc", Element.ALIGN_CENTER, 1, header_font);
+                    insertCell(table, "Serie", Element.ALIGN_CENTER, 1, header_font);
+                    insertCell(table, "Nro", Element.ALIGN_CENTER, 1, header_font);
+                    insertCell(table, "Importe", Element.ALIGN_CENTER, 1, header_font);
+                    insertCell(table, "Saldo", Element.ALIGN_CENTER, 1, header_font);
                 }
             }
             paragraph.add(table);
@@ -116,7 +138,7 @@ public class Pdf_modelo implements PdfInterface.PdfModelo {
 
 
     private void insertCell(PdfPTable table, String text, int align, int colspan, Font font){
-        PdfPCell cell = new PdfPCell(new Phrase(text));
+        PdfPCell cell = new PdfPCell(new Phrase(text, font));
         //set the cell alignment
         cell.setHorizontalAlignment(align);
         //set the cell column span in case you want to merge two or more cells

@@ -241,12 +241,14 @@ public class CuentaModelo implements CuentaInterface.CuentaModelo {
                             }
                             CuentaItem ci = new CuentaItem();
                             String fecha = object.getString("fecha");
+                            String fechavto = object.getString("fechavto");
                             String tdoc = object.getString("tdoc");
                             String serie = object.getString("serie");
                             String numero = object.getString("numero");
                             String importe = object.getString("importetotal");
                             String saldo = object.getString("sub_importetotal");
                             ci.setFecha(fecha);
+                            ci.setFechavto(fechavto);
                             ci.setTdoc(tdoc);
                             ci.setSerie(serie);
                             ci.setNumerodoc(numero);

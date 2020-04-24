@@ -191,6 +191,7 @@ public class CuentaActivity extends AppCompatActivity implements CuentaInterface
         fDate.setText("");
         buscar.setEnabled(false);
         spinnerRubroAdapter.add(new Rubro("Rubro","Rubro"));
+        setDate();
     }
 
     public void buscarDescripcionRubros(String rubro){

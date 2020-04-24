@@ -8,11 +8,11 @@ import java.util.ArrayList;
 public interface PdfInterface {
 
     interface PdfModelo{
-        void generatePdf(ArrayList<ListItem> lCuentas);
+        void generatePdf(ArrayList<ListItem> lCuentas, ArrayList<String> dataHeader);
     }
 
     interface PdfPresentador{
-        void sendList(ArrayList<ListItem> lCuentas);
+        void sendList(ArrayList<ListItem> lCuentas, ArrayList<String> dataHeader);
         void returnPdfPath(String path);
     }
 

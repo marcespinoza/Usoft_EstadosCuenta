@@ -9,12 +9,25 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:padding="2dp"
-    android:weightSum="10"
+    android:weightSum="12"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
 
     <TextView
         android:id="@+id/fecha"
+        android:layout_weight="2"
+        android:layout_width="0dp"
+        android:textColor="@color/black"
+        android:layout_height="wrap_content"
+        android:gravity="left"/>
+
+    <View
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:background="@color/grey_600"/>
+
+    <TextView
+        android:id="@+id/fechavto"
         android:layout_weight="2"
         android:layout_width="0dp"
         android:textColor="@color/black"

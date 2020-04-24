@@ -50,11 +50,12 @@ public class MovimientoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             CuentaItem cuentaItem = (CuentaItem) lcuentas.get(position);
             MovimientoHolder movimientoHolder = (MovimientoHolder) holder;
             movimientoHolder.fecha.setText(cuentaItem.getFecha());
+            movimientoHolder.fechavto.setText(cuentaItem.getFechavto());
             movimientoHolder.tdoc.setText(cuentaItem.getTdoc());
             movimientoHolder.serie.setText(cuentaItem.getSerie());
             movimientoHolder.numerodoc.setText(cuentaItem.getNumerodoc());
-            movimientoHolder.importe.setText(cuentaItem.getImporte());
-            movimientoHolder.saldo.setText(cuentaItem.getSaldo());
+            movimientoHolder.importe.setText(String.valueOf(cuentaItem.getImporte()));
+            movimientoHolder.saldo.setText(String.valueOf(cuentaItem.getSaldo()));
 
         }
     }
@@ -78,6 +79,7 @@ public class MovimientoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     public class MovimientoHolder extends RecyclerView.ViewHolder{
 
         TextView fecha;
+        TextView fechavto;
         TextView tdoc;
         TextView serie;
         TextView numerodoc;
@@ -87,6 +89,7 @@ public class MovimientoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
         public MovimientoHolder(@NonNull View itemView) {
             super(itemView);
             fecha = itemView.findViewById(R.id.fecha);
+            fechavto = itemView.findViewById(R.id.fechavto);
             tdoc = itemView.findViewById(R.id.tipodoc);
             serie = itemView.findViewById(R.id.serie);
             numerodoc = itemView.findViewById(R.id.numerodoc);

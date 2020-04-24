@@ -9,11 +9,36 @@ public class CuentaItem extends ListItem implements Serializable {
 
     String moneda;
     String fecha;
+    String fechavto;
     String tdoc;
     String serie;
     String numerodoc;
     String importe;
     String saldo;
+
+    public String getImporte() {
+        return importe;
+    }
+
+    public void setImporte(String importe) {
+        this.importe = importe;
+    }
+
+    public String getSaldo() {
+        return saldo;
+    }
+
+    public void setSaldo(String saldo) {
+        this.saldo = saldo;
+    }
+
+    public String getFechavto() {
+        return fechavto;
+    }
+
+    public void setFechavto(String fechavto) {
+        this.fechavto = fechavto;
+    }
 
     public String getTdoc() {
         return tdoc;
@@ -55,20 +80,4 @@ public class CuentaItem extends ListItem implements Serializable {
         this.fecha = fecha;
     }
 
-    public String getImporte() {
-        return importe;
-    }
-
-    public void setImporte(String importe) {
-        this.importe = importe;
-    }
-
-    public String getSaldo() {
-        return saldo;
-    }
-
-    public void setSaldo(String saldo) {
-        this.saldo = saldo;
-    }
-
-}
+   }

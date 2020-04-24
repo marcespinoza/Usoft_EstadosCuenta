@@ -19,8 +19,8 @@ public class PdfPresentador implements PdfInterface.PdfPresentador {
     }
 
     @Override
-    public void sendList(ArrayList<ListItem> lCuentas) {
-        pModelo.generatePdf(lCuentas);
+    public void sendList(ArrayList<ListItem> lCuentas, ArrayList<String> dataHeader) {
+        pModelo.generatePdf(lCuentas, dataHeader);
     }
 
     @Override
