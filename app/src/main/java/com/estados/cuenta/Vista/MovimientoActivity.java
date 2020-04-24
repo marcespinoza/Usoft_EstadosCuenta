@@ -55,12 +55,14 @@ public class MovimientoActivity extends AppCompatActivity implements PdfInterfac
     public PdfInterface.PdfPresentador pPresentador;
     String[] permissions= new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE};
     public static final int MULTIPLE_PERMISSIONS = 10;
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.movimiento_activity);
         ButterKnife.bind(this);
+        progressDialog = new ProgressDialog(MovimientoActivity.this);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -85,6 +87,7 @@ public class MovimientoActivity extends AppCompatActivity implements PdfInterfac
 
     @OnClick(R.id.pdf)
     public void generarPdf(){
+        progressDialog.showProgressDialog("Generando PDF");
         pPresentador.sendList(lMovimientos, dataHeader);
     }
 
@@ -148,9 +151,8 @@ public class MovimientoActivity extends AppCompatActivity implements PdfInterfac
 
     @Override
     public void showSnackBar(String filename) {
-
+            progressDialog.finishDialog();
             final Snackbar snackbar = Snackbar.make(view, "PDF generado", Snackbar.LENGTH_LONG);
-
             snackbar.setAction("ABRIR", new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

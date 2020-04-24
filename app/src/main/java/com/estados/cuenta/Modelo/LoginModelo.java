@@ -113,10 +113,10 @@ public class LoginModelo implements LoginInterface.Modelo {
                 ResultSet rs = stmt.executeQuery();
                 if(rs.next()){
                     String host = rs.getString(1);
-                    /*if(rs.getString(2).equals("N")){
+                    if(rs.getString(2).equals("N")){
                         bandera = "N";
                         return false;
-                    }*/
+                    }
                     SharedPreferences.Editor editor = sharedPref.edit();
                     editor.putString("empresa",params[0]);
                     editor.putString("host", host);
