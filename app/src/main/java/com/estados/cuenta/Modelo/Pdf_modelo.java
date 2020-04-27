@@ -1,5 +1,7 @@
 package com.estados.cuenta.Modelo;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Environment;
 import android.util.Log;
 
@@ -8,6 +10,7 @@ import com.estados.cuenta.Pojo.CuentaHeader;
 import com.estados.cuenta.Pojo.CuentaItem;
 import com.estados.cuenta.Pojo.ListItem;
 import com.estados.cuenta.Presentador.PdfPresentador;
+import com.estados.cuenta.Vista.GlobalApplication;
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
@@ -35,9 +38,13 @@ import java.util.Locale;
 public class Pdf_modelo implements PdfInterface.PdfModelo {
 
     PdfInterface.PdfPresentador pPresentador;
+    SharedPreferences sPreferences;
+    Context context;
 
     public Pdf_modelo(PdfPresentador pPresentador) {
         this.pPresentador = pPresentador;
+        context = GlobalApplication.getContext();
+        sPreferences = context.getSharedPreferences("datosconexion", Context.MODE_PRIVATE);
     }
 
     @Override
@@ -49,6 +56,7 @@ public class Pdf_modelo implements PdfInterface.PdfModelo {
         // TODO Auto-generated method stub
         Document document = new com.itextpdf.text.Document(PageSize.A4);
         String filename = "";
+        String empresa = sPreferences.getString("empresa","");
         try {
             String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Estadocuenta";
             Paragraph paragraph = new Paragraph();
@@ -67,26 +75,29 @@ public class Pdf_modelo implements PdfInterface.PdfModelo {
             Font font = new Font(Font.getFamily("TIMES_ROMAN"), 12,    Font.BOLD|Font.UNDERLINE);
             Font header_font = new Font(Font.getFamily("TIMES_ROMAN"), 12,    Font.BOLD);
             Font line_font = new Font(Font.getFamily("TIMES_ROMAN"), 12,    Font.NORMAL);
-            Paragraph p1 = new Paragraph("Movimientos", font);
+            Paragraph p1 = new Paragraph("Estado de cuenta - "+empresa, font);
             p1.setAlignment(Paragraph.ALIGN_CENTER);
             document.add(p1);
             document.add( Chunk.NEWLINE );
             //------Data header---//
-            Paragraph nro_cuenta = new Paragraph("Nro cuenta: "+dataHeader.get(0));
-            nro_cuenta.setAlignment(Paragraph.ALIGN_LEFT);
-            nro_cuenta.setFirstLineIndent(19f);
-            document.add(nro_cuenta);
+            float[] columnFecha = {4f, 1f, 4f};
+            PdfPTable fechas = new PdfPTable(columnFecha);
+            fechas.setWidthPercentage(91.5f);
+            fechas.addCell(getCell("Nro cuenta: "+dataHeader.get(0), PdfPCell.ALIGN_LEFT));
+            fechas.addCell(getCell("", PdfPCell.ALIGN_CENTER));
+            fechas.addCell(getCell("Desde: "+dataHeader.get(3)+" "+"Hasta: "+dataHeader.get(4), PdfPCell.ALIGN_RIGHT));
+            document.add(fechas);
             Paragraph descripcion = new Paragraph("Descripcion: "+dataHeader.get(1));
             descripcion.setAlignment(Paragraph.ALIGN_LEFT);
-            descripcion.setFirstLineIndent(19f);
+            descripcion.setFirstLineIndent(22f);
             document.add(descripcion);
             Paragraph razon_social = new Paragraph("Razon social: "+dataHeader.get(2));
             razon_social.setAlignment(Paragraph.ALIGN_LEFT);
-            razon_social.setFirstLineIndent(19f);
+            razon_social.setFirstLineIndent(22f);
             document.add(razon_social);
-            Paragraph rubro = new Paragraph("Rubro: "+dataHeader.get(3));
+            Paragraph rubro = new Paragraph("Rubro: "+dataHeader.get(5)+" "+dataHeader.get(6));
             rubro.setAlignment(Paragraph.ALIGN_LEFT);
-            rubro.setFirstLineIndent(19f);
+            rubro.setFirstLineIndent(22f);
             document.add(rubro);
 
             float[] columnWidths = {2f, 2f, 1.5f, 1f, 1.5f, 2f, 2f};
@@ -136,6 +147,13 @@ public class Pdf_modelo implements PdfInterface.PdfModelo {
         }
     }
 
+    public PdfPCell getCell(String text, int alignment) {
+        PdfPCell cell = new PdfPCell(new Phrase(text));
+        cell.setPadding(0);
+        cell.setHorizontalAlignment(alignment);
+        cell.setBorder(PdfPCell.NO_BORDER);
+        return cell;
+    }
 
     private void insertCell(PdfPTable table, String text, int align, int colspan, Font font){
         PdfPCell cell = new PdfPCell(new Phrase(text, font));

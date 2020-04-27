@@ -27,7 +27,7 @@
         android:id="@+id/fechavto"
         android:layout_weight="2"
         android:layout_width="0dp"
-        android:background="@color/grey_400"
+        android:background="@color/grey_200"
         android:textSize="10sp"
         android:textColor="@color/black"
         android:layout_height="wrap_content"
@@ -65,7 +65,7 @@
         android:id="@+id/importe"
         android:layout_weight="2.1"
         android:layout_width="0dp"
-        android:background="@color/grey_400"
+        android:background="@color/grey_200"
         android:textSize="10sp"
         android:layout_height="wrap_content"
         android:gravity="right"/>

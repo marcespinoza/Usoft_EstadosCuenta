@@ -23,17 +23,17 @@ import java.util.List;
 
 public class AutoCompleteClienteAdapter extends ArrayAdapter<Cliente> {
 
-    private List<Cliente> countryListFull;
+    private List<Cliente> clienteListFull;
 
-    public AutoCompleteClienteAdapter(@NonNull Context context, int textViewResourceId, @NonNull List<Cliente> countryList) {
-        super(context, textViewResourceId, countryList);
-        countryListFull = new ArrayList<>(countryList);
+    public AutoCompleteClienteAdapter(@NonNull Context context, int textViewResourceId, @NonNull List<Cliente> clienteList) {
+        super(context, textViewResourceId, clienteList);
+        clienteListFull = new ArrayList<>(clienteList);
     }
 
     @NonNull
     @Override
     public Filter getFilter() {
-        return countryFilter;
+        return clienteFilter;
     }
 
     @NonNull
@@ -46,28 +46,30 @@ public class AutoCompleteClienteAdapter extends ArrayAdapter<Cliente> {
         }
 
         TextView textViewName = convertView.findViewById(R.id.nombrecliente);
+        TextView textViewNro = convertView.findViewById(R.id.nrocuenta);
 
         Cliente Cliente = getItem(position);
 
         if (Cliente != null) {
+            textViewNro.setText(Cliente.getNrocuenta());
             textViewName.setText(Cliente.getNombre());
         }
 
         return convertView;
     }
 
-    private Filter countryFilter = new Filter() {
+    private Filter clienteFilter = new Filter() {
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
             FilterResults results = new FilterResults();
             List<Cliente> suggestions = new ArrayList<>();
 
             if (constraint == null || constraint.length() == 0) {
-                suggestions.addAll(countryListFull);
+                suggestions.addAll(clienteListFull);
             } else {
                 String filterPattern = constraint.toString().toLowerCase().trim();
 
-                for (Cliente item : countryListFull) {
+                for (Cliente item : clienteListFull) {
                     if (item.getNombre().toLowerCase().contains(filterPattern)) {
                         suggestions.add(item);
                     }

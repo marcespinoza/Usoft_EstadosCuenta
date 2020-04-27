@@ -14,9 +14,6 @@ import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -50,6 +47,9 @@ public class MovimientoActivity extends AppCompatActivity implements PdfInterfac
     @BindView(R.id.nombre) TextView desc;
     @BindView(R.id.razon_social) TextView razonSocial;
     @BindView(R.id.rubro) TextView rubro;
+    @BindView(R.id.fch_desde) TextView desde;
+    @BindView(R.id.fch_hasta) TextView hasta;
+    @BindView(R.id.desc_rubro) TextView descrubro;
     ArrayList<ListItem> lMovimientos;
     ArrayList<String> dataHeader;
     public PdfInterface.PdfPresentador pPresentador;
@@ -73,7 +73,10 @@ public class MovimientoActivity extends AppCompatActivity implements PdfInterfac
         nroCuenta.setText(dataHeader.get(0));
         desc.setText(dataHeader.get(1));
         razonSocial.setText(dataHeader.get(2));
-        rubro.setText(dataHeader.get(3));
+        desde.setText(dataHeader.get(3));
+        hasta.setText(dataHeader.get(4));
+        rubro.setText(dataHeader.get(5));
+        descrubro.setText(dataHeader.get(6));
         //-------------//
         lMovimientos =GlobalApplication.getInstance().getCuentas();
         MovimientoAdapter movimientoAdapter = new MovimientoAdapter(lMovimientos);

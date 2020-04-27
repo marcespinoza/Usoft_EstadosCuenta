@@ -40,13 +40,62 @@
             <TextView
                 android:text="NRO. CUENTA: "
                 android:layout_width="wrap_content"
+                android:fontFamily="@font/heebobold"
+                android:textColor="@color/blue_800"
+                android:textSize="12sp"
                 android:layout_height="wrap_content"/>
 
             <TextView
                 android:id="@+id/nro_cuenta"
                 android:textColor="@color/black"
+                android:textSize="12sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/heebobold"
+                android:textColor="@color/blue_800"
+                android:textSize="12sp"
+                android:text="DESDE: "/>
+
+            <TextView
+                android:id="@+id/fch_desde"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:textSize="12sp"
+                android:layout_marginRight="5dp"/>
+
+             <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                 android:fontFamily="@font/heebobold"
+                 android:textColor="@color/blue_800"
+                 android:textSize="12sp"
+                android:text="HASTA: "/>
+
+            <TextView
+                android:id="@+id/fch_hasta"
+                android:textColor="@color/black"
+                android:textSize="12sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            </LinearLayout>
+
+            </RelativeLayout>
 
         </LinearLayout>
 
@@ -58,11 +107,15 @@
             <TextView
                 android:text="NOMBRE: "
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/heebobold"
+                android:textColor="@color/blue_800"
+                android:textSize="12sp"/>
 
             <TextView
                 android:id="@+id/nombre"
                 android:textColor="@color/black"
+                android:textSize="12sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
@@ -76,13 +129,17 @@
             <TextView
                 android:text="RAZON SOCIAL: "
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/heebobold"
+                android:textColor="@color/blue_800"
+                android:textSize="12sp"/>
 
             <TextView
                 android:id="@+id/razon_social"
                 android:textColor="@color/black"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:textSize="12sp"/>
 
         </LinearLayout>
 
@@ -94,13 +151,25 @@
             <TextView
                 android:text="RUBRO: "
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/heebobold"
+                android:textColor="@color/blue_800"
+                android:textSize="12sp"/>
 
             <TextView
                 android:id="@+id/rubro"
                 android:textColor="@color/black"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:layout_marginRight="5dp"/>
+
+            <TextView
+                android:id="@+id/desc_rubro"
+                android:textColor="@color/black"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"/>
 
         </LinearLayout>
 

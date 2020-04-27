@@ -21,10 +21,6 @@
         android:layout_height="wrap_content"
         android:gravity="left"/>
 
-    <View
-        android:layout_width="1dp"
-        android:layout_height="match_parent"
-        android:background="@color/grey_600"/>
 
     <TextView
         android:id="@+id/fechavto"

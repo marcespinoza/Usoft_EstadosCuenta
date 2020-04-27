@@ -150,6 +150,8 @@
             android:id="@+id/cliente"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:dropDownWidth="250dp"
+
             android:maxLines="1"
             android:layout_weight="1"
             android:textSize="15sp"/>

@@ -76,7 +76,6 @@ public class CuentaActivity extends AppCompatActivity implements CuentaInterface
     SharedPreferences sharedPref;
     SpinnerRubroAdapter spinnerRubroAdapter;
     ArrayList<Rubro> lRubros = new ArrayList<>();
-    private DataFragment dataFragment;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -97,6 +96,7 @@ public class CuentaActivity extends AppCompatActivity implements CuentaInterface
                 String cl = autocompleteCliente.getText().toString();
                 if(!cl.isEmpty())
                 enviarCliente(cl);
+                showDialog("Obteniendo clientes..");
             }
         });
         limpiarCliente.setEnabled(false);
@@ -286,12 +286,15 @@ public class CuentaActivity extends AppCompatActivity implements CuentaInterface
     }
 
     public void enviarCliente(String cliente){
+        cPresentador.enviarCliente(cliente);
+    }
+
+    public void showDialog(String mensaje){
         runOnUiThread(new Runnable() {
             public void run() {
-                pdialog.showProgressDialog("Obteniendo clientes..");
+                pdialog.showProgressDialog(mensaje);
             }
         });
-        cPresentador.enviarCliente(cliente);
     }
 
     @Override
@@ -325,6 +328,7 @@ public class CuentaActivity extends AppCompatActivity implements CuentaInterface
                         buscarDescripcionRubros(cliente.getNrocuenta());
                         InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
                         imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
+                        showDialog("Obteniendo rubros..");
                     }
                 });
             }
@@ -334,6 +338,7 @@ public class CuentaActivity extends AppCompatActivity implements CuentaInterface
     @Override
     public void mostrarDescripcionRubro(ArrayList<Rubro> lRubros) {
         this.lRubros =lRubros;
+        pdialog.finishDialog();
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -354,7 +359,10 @@ public class CuentaActivity extends AppCompatActivity implements CuentaInterface
         lDescripcion.add(nrocuenta);
         lDescripcion.add(descripcion.getText().toString());
         lDescripcion.add(razonsocial.getText().toString());
+        lDescripcion.add(iDate.getText().toString());
+        lDescripcion.add(fDate.getText().toString());
         lDescripcion.add(rubro.getNombre());
+        lDescripcion.add(rubro.getDescripcion());
         intent.putStringArrayListExtra("header",lDescripcion);
         startActivity(intent);
     }
@@ -363,27 +371,5 @@ public class CuentaActivity extends AppCompatActivity implements CuentaInterface
     protected void onSaveInstanceState(Bundle InstanceState) {
         super.onSaveInstanceState(InstanceState);
         InstanceState.clear();
-    }
-
-    public class DataFragment extends Fragment {
-
-        // data object we want to retain
-        ArrayList<ListItem> cuentas;
-
-        // this method is only called once for this fragment
-        @Override
-        public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            // retain this fragment
-            setRetainInstance(true);
-        }
-
-        public void setData(ArrayList<ListItem> cuentas) {
-            this.cuentas = cuentas;
-        }
-
-        public ArrayList<ListItem> getData() {
-            return cuentas;
-        }
     }
 }
