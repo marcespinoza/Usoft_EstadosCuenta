@@ -42,4 +42,5 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'
     implementation files('libs/mysql-connector-java-5.1.48.jar')
+    implementation files('libs/poi-3.7.jar')
 }

@@ -17,7 +17,7 @@ public interface CuentaInterface  {
     interface CuentaModelo{
         void buscarCliente(String cliente);
         void buscarRubro(String rubro);
-        void obtenerMovimientos(String nrocuenta, String rubro, String f_inicial, String f_final, boolean b);
+        void obtenerMovimientos(String nrocuenta, String rubro, String f_inicial, String f_final, boolean b, String orden);
     }
 
     interface CuentaPresentador{
@@ -26,7 +26,7 @@ public interface CuentaInterface  {
         void mostrarMensaje(String mensaje);
         void enviarRubro(String rubro);
         void descripcionRubros(ArrayList<Rubro> lRubros);
-        void obtenerMovimientos(String nrocuenta, String rubro, String f_inicial, String f_final, boolean b);
+        void obtenerMovimientos(String nrocuenta, String rubro, String f_inicial, String f_final, boolean b, String orden);
         void retornarMovimientos(ArrayList<ListItem> cuentas);
     }
 

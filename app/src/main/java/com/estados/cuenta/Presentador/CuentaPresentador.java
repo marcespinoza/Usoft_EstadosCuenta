@@ -44,8 +44,8 @@ public class CuentaPresentador implements CuentaInterface.CuentaPresentador {
     }
 
     @Override
-    public void obtenerMovimientos(String nrocuenta, String rubro, String f_inicial, String f_final, boolean b) {
-        cModelo.obtenerMovimientos(nrocuenta, rubro, f_inicial, f_final, b);
+    public void obtenerMovimientos(String nrocuenta, String rubro, String f_inicial, String f_final, boolean b, String orden) {
+        cModelo.obtenerMovimientos(nrocuenta, rubro, f_inicial, f_final, b, orden);
     }
 
     @Override

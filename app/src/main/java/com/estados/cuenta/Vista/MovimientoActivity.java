@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.estados.cuenta.Adapter.MovimientoAdapter;
 import com.estados.cuenta.Interface.PdfInterface;
+import com.estados.cuenta.Pojo.CuentaItem;
 import com.estados.cuenta.Pojo.ListItem;
 import com.estados.cuenta.Presentador.PdfPresentador;
 import com.estados.cuenta.R;
@@ -88,11 +89,21 @@ public class MovimientoActivity extends AppCompatActivity implements PdfInterfac
         }
     }
 
-    @OnClick(R.id.pdf)
-    public void generarPdf(){
-        progressDialog.showProgressDialog("Generando PDF");
-        pPresentador.sendList(lMovimientos, dataHeader);
+
+
+    @OnClick({R.id.pdf, R.id.excel})
+    public void generarPdf(View view){
+        progressDialog.showProgressDialog("Generando documento");
+        switch (view.getId()) {
+            case R.id.pdf:
+                pPresentador.sendList(lMovimientos, dataHeader, true);
+                break;
+            case R.id.excel:
+                pPresentador.sendList(lMovimientos, dataHeader, false);
+                break;
+        }
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -160,7 +171,7 @@ public class MovimientoActivity extends AppCompatActivity implements PdfInterfac
                 @Override
                 public void onClick(View v) {
                     File file = null;
-                    file = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Estadocuenta/"+filename);
+                    file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)+"/"+filename);
                     if(file.exists()) {
                         Intent target = new Intent(Intent.ACTION_VIEW);
                         target.setDataAndType(Uri.fromFile(file), "application/pdf");
@@ -170,7 +181,6 @@ public class MovimientoActivity extends AppCompatActivity implements PdfInterfac
                         try {
                             startActivity(intent);
                         } catch (ActivityNotFoundException e) {
-                            // Instruct the user to install a PDF reader here, or something
                         }
                     }
                 }

@@ -2,7 +2,6 @@ package com.estados.cuenta.Presentador;
 
 import com.estados.cuenta.Interface.PdfInterface;
 import com.estados.cuenta.Modelo.Pdf_modelo;
-import com.estados.cuenta.Pojo.CuentaItem;
 import com.estados.cuenta.Pojo.ListItem;
 import com.estados.cuenta.Vista.MovimientoActivity;
 
@@ -19,8 +18,8 @@ public class PdfPresentador implements PdfInterface.PdfPresentador {
     }
 
     @Override
-    public void sendList(ArrayList<ListItem> lCuentas, ArrayList<String> dataHeader) {
-        pModelo.generatePdf(lCuentas, dataHeader);
+    public void sendList(ArrayList<ListItem> lCuentas, ArrayList<String> dataHeader, boolean b) {
+        pModelo.generatePdf(lCuentas, dataHeader, b);
     }
 
     @Override

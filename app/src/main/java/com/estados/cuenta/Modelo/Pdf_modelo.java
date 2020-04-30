@@ -11,20 +11,25 @@ import com.estados.cuenta.Pojo.CuentaItem;
 import com.estados.cuenta.Pojo.ListItem;
 import com.estados.cuenta.Presentador.PdfPresentador;
 import com.estados.cuenta.Vista.GlobalApplication;
-import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Chunk;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.Element;
 import com.itextpdf.text.Font;
-import com.itextpdf.text.Image;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
-import com.itextpdf.text.pdf.CMYKColor;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
+
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.IndexedColors;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -48,8 +53,105 @@ public class Pdf_modelo implements PdfInterface.PdfModelo {
     }
 
     @Override
-    public void generatePdf(ArrayList<ListItem> lCuentas, ArrayList<String> dataHeader) {
-        createPdf(lCuentas, dataHeader);
+    public void generatePdf(ArrayList<ListItem> lCuentas, ArrayList<String> dataHeader, boolean b) {
+        if(b){
+            createPdf(lCuentas, dataHeader);
+        }else{
+            createExcel(lCuentas, dataHeader);
+        }
+      }
+
+    private void createExcel(ArrayList<ListItem> lMovimientos, ArrayList<String> dataHeader){
+        Workbook workbook = new HSSFWorkbook();
+        org.apache.poi.ss.usermodel.Font font = workbook.createFont();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HHmmss", Locale.getDefault());
+        String fileName = "EstCta"+sdf.format(new Date())+".xls";
+        CellStyle style = workbook.createCellStyle();
+        style.setFillBackgroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+        style.setFillPattern(CellStyle.SOLID_FOREGROUND);
+        Sheet sheet = workbook.createSheet("Estado de cuenta");
+        Cell c ;
+        Row nrocuenta = sheet.createRow(0);
+        c = nrocuenta.createCell(0);
+        c.setCellValue("Nro. cuenta: "+dataHeader.get(0));
+        c.setCellStyle(style);
+        c = nrocuenta.createCell(2);
+        c.setCellValue("Fecha desde: "+dataHeader.get(3));
+        c = nrocuenta.createCell(3);
+        c.setCellValue("Fecha hasta: "+dataHeader.get(4));
+        Row descripcion = sheet.createRow(1);
+        c = descripcion.createCell(0);
+        c.setCellValue("Descripcion: "+dataHeader.get(1));
+        Row rsocial = sheet.createRow(2);
+        c = rsocial.createCell(0);
+        c.setCellValue("Razon social: "+dataHeader.get(2));
+        Row rubro = sheet.createRow(3);
+        c = rubro.createCell(0);
+        c.setCellValue("Rubro: "+dataHeader.get(5)+" "+dataHeader.get(6));
+        Row emptyspace = sheet.createRow(4);
+        c = emptyspace.createCell(0);
+        c.setCellValue("");
+        int countRow = 5;
+        for(int x=0; x<lMovimientos.size(); x++){
+            Row row = sheet.createRow(x+countRow);
+            if(lMovimientos.get(x) instanceof CuentaItem){
+                CuentaItem cuentaItem = (CuentaItem) lMovimientos.get(x);
+                c = row.createCell(0);
+                c.setCellValue(cuentaItem.getFecha());
+                c = row.createCell(1);
+                c.setCellValue(cuentaItem.getFechavto());
+                c = row.createCell(2);
+                c.setCellValue(cuentaItem.getTdoc());
+                c = row.createCell(3);
+                c.setCellValue(cuentaItem.getSerie());
+                c = row.createCell(4);
+                c.setCellValue(cuentaItem.getNumerodoc());
+                c = row.createCell(5);
+                c.setCellValue(cuentaItem.getImporte());
+                c = row.createCell(6);
+                c.setCellValue(cuentaItem.getSaldo());
+            }else{
+                CuentaHeader cuentaHeader = (CuentaHeader) lMovimientos.get(x);
+                c = row.createCell(0);
+                c.setCellValue(cuentaHeader.getMoneda());
+                countRow++;
+                Row rowHeader = sheet.createRow(x+countRow);
+                c = rowHeader.createCell(0);
+                c.setCellValue("Fecha");
+                c = rowHeader.createCell(1);
+                c.setCellValue("Fecha Vto");
+                c = rowHeader.createCell(2);
+                c.setCellValue("Tipo doc");
+                c = rowHeader.createCell(3);
+                c.setCellValue("Serie");
+                c = rowHeader.createCell(4);
+                c.setCellValue("Nro");
+                c = rowHeader.createCell(5);
+                c.setCellValue("Importe");
+                c = rowHeader.createCell(6);
+                c.setCellValue("Saldo");
+            }
+        }
+
+        File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+        File file = new File(dir, fileName);
+        try {
+            file.createNewFile(); // creating the file inside the folder
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
+
+        try {
+            FileOutputStream fileOut = new FileOutputStream(file); //Opening the file
+            workbook.write(fileOut); //Writing all your row column inside the file
+            fileOut.close(); //closing the file and done
+            pPresentador.returnPdfPath(fileName);
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void createPdf(ArrayList<ListItem> lMovimientos, ArrayList<String> dataHeader) {
@@ -58,12 +160,8 @@ public class Pdf_modelo implements PdfInterface.PdfModelo {
         String filename = "";
         String empresa = sPreferences.getString("empresa","");
         try {
-            String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Estadocuenta";
             Paragraph paragraph = new Paragraph();
-            File dir = new File(path);
-            if(!dir.exists())
-                dir.mkdirs();
-
+            File dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HHmmss", Locale.getDefault());
             filename = "EstCta"+sdf.format(new Date())+".pdf";
             File file = new File(dir, filename);
@@ -115,7 +213,7 @@ public class Pdf_modelo implements PdfInterface.PdfModelo {
                 if(lMovimientos.get(x) instanceof CuentaItem){
                      CuentaItem cuentaItem = (CuentaItem) lMovimientos.get(x);
                       insertCell(table, cuentaItem.getFecha(), Element.ALIGN_CENTER, 1, line_font);
-                      insertCell(table, cuentaItem.getFecha(), Element.ALIGN_CENTER, 1, line_font);
+                      insertCell(table, cuentaItem.getFechavto(), Element.ALIGN_CENTER, 1, line_font);
                       insertCell(table, cuentaItem.getTdoc(), Element.ALIGN_CENTER, 1, line_font);
                       insertCell(table, cuentaItem.getSerie(), Element.ALIGN_CENTER, 1, line_font);
                       insertCell(table, cuentaItem.getNumerodoc(), Element.ALIGN_CENTER, 1, line_font);

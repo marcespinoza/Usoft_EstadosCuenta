@@ -25,14 +25,9 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatSpinner;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.estados.cuenta.Adapter.AutoCompleteClienteAdapter;
-import com.estados.cuenta.Adapter.MovimientoAdapter;
 import com.estados.cuenta.Adapter.SpinnerRubroAdapter;
-import com.estados.cuenta.BuildConfig;
 import com.estados.cuenta.Interface.CuentaInterface;
 import com.estados.cuenta.Pojo.ListItem;
 import com.estados.cuenta.Pojo.Cliente;
@@ -40,8 +35,8 @@ import com.estados.cuenta.Pojo.Rubro;
 import com.estados.cuenta.Presentador.CuentaPresentador;
 import com.estados.cuenta.R;
 import com.google.android.material.button.MaterialButton;
+import com.livefront.bridge.BuildConfig;
 
-import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -66,11 +61,13 @@ public class CuentaActivity extends AppCompatActivity implements CuentaInterface
     @BindView(R.id.radiogroup) RadioGroup radioGroup;
     @BindView(R.id.radiototal) RadioButton radioTotal;
     @BindView(R.id.radiopendiente) RadioButton radioPendiente;
+    @BindView(R.id.radioemision) RadioButton radioEmision;
+    @BindView(R.id.radiovto) RadioButton radioVto;
     @BindView(R.id.buscar) MaterialButton buscar;
     @BindView(R.id.androidversion2) TextView androidversion;
     @BindView(R.id.versionname2) TextView versionname;
     String nrocuenta = "";
-    private int mYear, mMonth, mDay, mHour, mMinute;
+    private int mYear, mMonth, mDay;
     public CuentaInterface.CuentaPresentador cPresentador;
     ProgressDialog pdialog;
     SharedPreferences sharedPref;
@@ -200,17 +197,20 @@ public class CuentaActivity extends AppCompatActivity implements CuentaInterface
 
     @OnClick(R.id.buscar)
     public void movimientos(){
+        String orden = "E";
+        if(!radioEmision.isChecked())
+            orden = "A";
         if(radioTotal.isChecked()){
             if(checkTotal()){
                 pdialog.showProgressDialog("Obteniendo movimientos");
                 Rubro rubro = (Rubro) rSpinner.getSelectedItem();
-                cPresentador.obtenerMovimientos(nrocuenta, rubro.getNombre(), iDate.getText().toString(), fDate.getText().toString(), true);
+                cPresentador.obtenerMovimientos(nrocuenta, rubro.getNombre(), iDate.getText().toString(), fDate.getText().toString(), true, orden);
             }
         }else if(radioPendiente.isChecked()){
             if(checkPendiente()){
                 pdialog.showProgressDialog("Obteniendo movimientos");
                 Rubro rubro = (Rubro) rSpinner.getSelectedItem();
-                cPresentador.obtenerMovimientos(nrocuenta, rubro.getNombre(), iDate.getText().toString(), fDate.getText().toString(), false);
+                cPresentador.obtenerMovimientos(nrocuenta, rubro.getNombre(), iDate.getText().toString(), fDate.getText().toString(), false, orden);
             }
         }
     }

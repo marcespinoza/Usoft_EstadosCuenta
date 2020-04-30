@@ -57,8 +57,8 @@ public class CuentaModelo implements CuentaInterface.CuentaModelo {
     }
 
     @Override
-    public void obtenerMovimientos(String nrocuenta, String rubro, String f_inicial, String f_final, boolean b) {
-        getMovimientos(nrocuenta, rubro, f_inicial, f_final, b);
+    public void obtenerMovimientos(String nrocuenta, String rubro, String f_inicial, String f_final, boolean b, String orden) {
+        getMovimientos(nrocuenta, rubro, f_inicial, f_final, b, orden);
     }
 
     public void getRubrosDesc(String nrocuenta) {
@@ -179,7 +179,7 @@ public class CuentaModelo implements CuentaInterface.CuentaModelo {
         });
     }
 
-    public void getMovimientos(String nrocuenta, String rubro, String f_inicial, String f_final, boolean b) {
+    public void getMovimientos(String nrocuenta, String rubro, String f_inicial, String f_final, boolean b, String orden) {
         urlServidor = sharedPrefConexion.getString("host","");
         String empresa = sharedPrefConexion.getString("empresa","");
         String url = "";
@@ -199,6 +199,7 @@ public class CuentaModelo implements CuentaInterface.CuentaModelo {
                 .add("empresa",empresa)
                 .add("fechainicial",f_inicial)
                 .add("fechafinal",f_final)
+                .add("orden", orden)
                 .build();
         Request request = new Request.Builder()
                 .url(url)
