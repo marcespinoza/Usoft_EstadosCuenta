@@ -174,7 +174,7 @@ public class CuentaActivity extends AppCompatActivity implements CuentaInterface
 
     private void setDate(){
         Date c = Calendar.getInstance().getTime();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
         String formattedDate = simpleDateFormat.format(c);
         fDate.setText(formattedDate);
     }
@@ -249,13 +249,10 @@ public class CuentaActivity extends AppCompatActivity implements CuentaInterface
         DatePickerDialog datePickerDialog = null;
         switch(v.getId()){
             case R.id.calendarioinicial:
-/*
-                datePickerDialog = new DatePickerDialog(this,(view, year, monthOfYear, dayOfMonth) -> iDate.setText(year + "-" + (monthOfYear + 1) + "-" + dayOfMonth), mYear, mMonth, mDay);
-*/
                 datePickerDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                        iDate.setText(year + "-" + (monthOfYear + 1) + "-" + dayOfMonth);
+                        iDate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
                         iDate.setBackgroundColor(Color.TRANSPARENT);
                     }
                 }, mYear, mMonth, mDay);
@@ -265,7 +262,7 @@ public class CuentaActivity extends AppCompatActivity implements CuentaInterface
                 datePickerDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
                     @Override
                     public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                        fDate.setText(year + "-" + (monthOfYear + 1) + "-" + dayOfMonth);
+                        fDate.setText(dayOfMonth + "-" + (monthOfYear + 1) + "-" + year);
                         fDate.setBackgroundColor(Color.TRANSPARENT);
                     }
                 }, mYear, mMonth, mDay);

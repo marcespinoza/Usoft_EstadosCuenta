@@ -40,8 +40,7 @@ public class AutoCompleteClienteAdapter extends ArrayAdapter<Cliente> {
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(
-                    R.layout.autocompletecliente_row, parent, false
+            convertView = LayoutInflater.from(getContext()).inflate( R.layout.autocompletecliente_row, parent, false
             );
         }
 
@@ -99,7 +98,7 @@ public class AutoCompleteClienteAdapter extends ArrayAdapter<Cliente> {
 
         @Override
         public CharSequence convertResultToString(Object resultValue) {
-            return ((Cliente) resultValue).getNombre();
+            return ((Cliente) resultValue).getNrocuenta()+" "+((Cliente) resultValue).getNombre();
         }
     };
 }

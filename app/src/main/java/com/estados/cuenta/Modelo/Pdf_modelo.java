@@ -1,5 +1,6 @@
 package com.estados.cuenta.Modelo;
 
+import android.animation.FloatArrayEvaluator;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Environment;
@@ -23,18 +24,24 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFFont;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.DataFormat;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.DateFormatConverter;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -62,34 +69,47 @@ public class Pdf_modelo implements PdfInterface.PdfModelo {
       }
 
     private void createExcel(ArrayList<ListItem> lMovimientos, ArrayList<String> dataHeader){
-        Workbook workbook = new HSSFWorkbook();
+        String empresa = sPreferences.getString("empresa","");
+        HSSFWorkbook workbook = new HSSFWorkbook();
         org.apache.poi.ss.usermodel.Font font = workbook.createFont();
+        HSSFCellStyle style = workbook.createCellStyle();
+        HSSFCellStyle styleFloat = workbook.createCellStyle();
+
+        DataFormat poiFormat = workbook.createDataFormat();
+        String excelFormatPattern = DateFormatConverter.convert(Locale.GERMAN, "##.###.###,##");
+        styleFloat.setDataFormat(poiFormat.getFormat(excelFormatPattern));
+
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HHmmss", Locale.getDefault());
         String fileName = "EstCta"+sdf.format(new Date())+".xls";
-        CellStyle style = workbook.createCellStyle();
-        style.setFillBackgroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
-        style.setFillPattern(CellStyle.SOLID_FOREGROUND);
-        Sheet sheet = workbook.createSheet("Estado de cuenta");
+        Sheet sheet = workbook.createSheet("Estado de cuenta "+empresa);
+        font.setBoldweight(org.apache.poi.ss.usermodel.Font.BOLDWEIGHT_BOLD);
+        style.setFont(font);
         Cell c ;
         Row nrocuenta = sheet.createRow(0);
         c = nrocuenta.createCell(0);
-        c.setCellValue("Nro. cuenta: "+dataHeader.get(0));
         c.setCellStyle(style);
-        c = nrocuenta.createCell(2);
-        c.setCellValue("Fecha desde: "+dataHeader.get(3));
+        c.setCellValue("Nro. cuenta: "+dataHeader.get(0));
         c = nrocuenta.createCell(3);
+        c.setCellStyle(style);
+        c.setCellValue("Fecha desde: "+dataHeader.get(3));
+        c = nrocuenta.createCell(4);
+        c.setCellStyle(style);
         c.setCellValue("Fecha hasta: "+dataHeader.get(4));
         Row descripcion = sheet.createRow(1);
         c = descripcion.createCell(0);
+        c.setCellStyle(style);
         c.setCellValue("Descripcion: "+dataHeader.get(1));
         Row rsocial = sheet.createRow(2);
         c = rsocial.createCell(0);
+        c.setCellStyle(style);
         c.setCellValue("Razon social: "+dataHeader.get(2));
         Row rubro = sheet.createRow(3);
         c = rubro.createCell(0);
+        c.setCellStyle(style);
         c.setCellValue("Rubro: "+dataHeader.get(5)+" "+dataHeader.get(6));
         Row emptyspace = sheet.createRow(4);
         c = emptyspace.createCell(0);
+        c.setCellStyle(style);
         c.setCellValue("");
         int countRow = 5;
         for(int x=0; x<lMovimientos.size(); x++){
@@ -107,28 +127,47 @@ public class Pdf_modelo implements PdfInterface.PdfModelo {
                 c = row.createCell(4);
                 c.setCellValue(cuentaItem.getNumerodoc());
                 c = row.createCell(5);
+                c.setCellType(Cell.CELL_TYPE_NUMERIC);
+                c.setCellStyle(styleFloat);
                 c.setCellValue(cuentaItem.getImporte());
+
+                /*c.setCellValue(cuentaItem.getImporte().replace(",", "."));*/
+
+                /*try {
+                c.setCellValue(DecimalFormat.getNumberInstance().parse(cuentaItem.getImporte()).floatValue());
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }*/
+
                 c = row.createCell(6);
                 c.setCellValue(cuentaItem.getSaldo());
             }else{
                 CuentaHeader cuentaHeader = (CuentaHeader) lMovimientos.get(x);
-                c = row.createCell(0);
+
+                c.setCellStyle(style);c = row.createCell(0);
                 c.setCellValue(cuentaHeader.getMoneda());
                 countRow++;
                 Row rowHeader = sheet.createRow(x+countRow);
                 c = rowHeader.createCell(0);
+                c.setCellStyle(style);
                 c.setCellValue("Fecha");
                 c = rowHeader.createCell(1);
+                c.setCellStyle(style);
                 c.setCellValue("Fecha Vto");
                 c = rowHeader.createCell(2);
+                c.setCellStyle(style);
                 c.setCellValue("Tipo doc");
                 c = rowHeader.createCell(3);
+                c.setCellStyle(style);
                 c.setCellValue("Serie");
                 c = rowHeader.createCell(4);
+                c.setCellStyle(style);
                 c.setCellValue("Nro");
                 c = rowHeader.createCell(5);
+                c.setCellStyle(style);
                 c.setCellValue("Importe");
                 c = rowHeader.createCell(6);
+                c.setCellStyle(style);
                 c.setCellValue("Saldo");
             }
         }

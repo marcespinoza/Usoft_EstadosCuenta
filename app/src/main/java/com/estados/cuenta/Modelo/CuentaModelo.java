@@ -9,6 +9,7 @@ import com.estados.cuenta.Pojo.Cliente;
 import com.estados.cuenta.Pojo.CuentaHeader;
 import com.estados.cuenta.Pojo.CuentaItem;
 import com.estados.cuenta.Pojo.Rubro;
+import com.estados.cuenta.Util.DateFormater;
 import com.estados.cuenta.Vista.GlobalApplication;
 
 import org.json.JSONArray;
@@ -179,10 +180,12 @@ public class CuentaModelo implements CuentaInterface.CuentaModelo {
         });
     }
 
-    public void getMovimientos(String nrocuenta, String rubro, String f_inicial, String f_final, boolean b, String orden) {
+    public void getMovimientos(String nrocuenta, String rubro, String finicial, String ffinal, boolean b, String orden) {
         urlServidor = sharedPrefConexion.getString("host","");
         String empresa = sharedPrefConexion.getString("empresa","");
         String url = "";
+        String f_inicial = DateFormater.formateDate("dd-MM-yyyy","yyyy-MM-dd", finicial);
+        String f_final = DateFormater.formateDate("dd-MM-yyyy","yyyy-MM-dd", ffinal);
         if(b){
             url = "http://"+urlServidor+":10701/api/index.php/api/getmovimientostotal";
         }else{

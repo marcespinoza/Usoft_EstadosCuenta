@@ -163,15 +163,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:dropDownWidth="250dp"
-
-            android:maxLines="1"
             android:layout_weight="1"
             android:textSize="15sp"/>
 
         <ImageButton
             android:id="@+id/cleancliente"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:adjustViewBounds="true"
             android:layout_marginRight="8dp"
             android:layout_gravity="right|center_vertical"
@@ -180,8 +178,8 @@
 
         <ImageButton
             android:id="@+id/searchcliente"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:adjustViewBounds="true"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="8dp"
@@ -236,26 +234,29 @@
 
  </androidx.cardview.widget.CardView>
 
-    <LinearLayout
-        android:id="@+id/calendars_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/cardview"
-        android:orientation="vertical"
-        android:padding="10dp">
+         <LinearLayout
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:orientation="horizontal"
+             android:layout_weight="3">
+
+             <TextView
+                 android:layout_width="0dp"
+                 android:layout_height="wrap_content"
+                 android:layout_weight="1"/>
 
     <RadioGroup
         android:id="@+id/radiogroup"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:gravity="center_horizontal"
+        android:layout_weight="2"
         android:orientation="horizontal" >
 
         <RadioButton
             android:id="@+id/radiototal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginRight="20dp"
             android:checked="true"
             android:textSize="15sp"
             android:text="Total" />
@@ -269,6 +270,8 @@
 
     </RadioGroup>
 
+         </LinearLayout>
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
@@ -276,18 +279,27 @@
             android:layout_marginBottom="3dp"
             android:background="@color/grey_300"/>
 
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:orientation="horizontal"
+          android:layout_weight="3">
+
+          <TextView
+              android:layout_width="0dp"
+              android:layout_height="match_parent"
+              android:gravity="center_vertical|right"
+              android:fontFamily="@font/heebobold"
+              android:text="Orden por fecha"
+              android:layout_weight="1"/>
+
         <RadioGroup
             android:id="@+id/radiogrouporden"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
+            android:layout_weight="2"
             android:orientation="horizontal" >
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Ordenar por"
-                android:fontFamily="@font/heebobold"/>
 
             <RadioButton
                 android:id="@+id/radioemision"
@@ -295,16 +307,19 @@
                 android:layout_height="wrap_content"
                 android:checked="true"
                 android:textSize="15sp"
-                android:text="Fch. Emisión" />
+                android:text="Emisión" />
 
             <RadioButton
                 android:id="@+id/radiovto"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="15sp"
-                android:text="Fch. Vto." />
+                android:text="Vencimiento" />
 
         </RadioGroup>
+
+      </LinearLayout>
+
 
         <View
             android:layout_width="match_parent"
@@ -313,47 +328,52 @@
             android:layout_marginBottom="3dp"
             android:background="@color/grey_300"/>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:gravity="center_horizontal"
-        android:orientation="horizontal">
+        android:layout_marginLeft="80dp">
 
         <TextView
+            android:id="@+id/textofchinicial"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="10dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentBottom="true"
             android:textSize="15sp"
+            android:paddingBottom="10dp"
             android:text="Fecha inicial"/>
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/inicialDate"
             android:layout_width="100dp"
             android:layout_marginRight="5dp"
+            android:layout_toRightOf="@+id/textofchinicial"
             android:enabled="false"
             android:layout_height="wrap_content"/>
 
         <ImageButton
             android:id="@+id/calendarioinicial"
             android:layout_gravity="center_vertical"
+            android:layout_toRightOf="@+id/inicialDate"
             android:layout_width="30dp"
             android:layout_height="30dp"
+            android:layout_centerVertical="true"
             android:background="@drawable/calendar_background"
             android:foreground="?attr/selectableItemBackgroundBorderless"/>
 
-    </LinearLayout>
+    </RelativeLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:orientation="horizontal">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="80dp">
 
         <TextView
+            android:id="@+id/textofchfinal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="10dp"
+            android:layout_alignParentBottom="true"
+            android:paddingBottom="10dp"
             android:textSize="15sp"
             android:text="Fecha final"/>
 
@@ -361,6 +381,7 @@
             android:id="@+id/finalDate"
             android:layout_width="100dp"
             android:layout_marginRight="5dp"
+            android:layout_toRightOf="@id/textofchfinal"
             android:enabled="false"
             android:layout_height="wrap_content"/>
 
@@ -368,15 +389,15 @@
             android:id="@+id/calendariofinal"
             android:layout_width="30dp"
             android:layout_height="30dp"
-            android:layout_gravity="center_vertical"
+            android:layout_toRightOf="@id/finalDate"
+            android:layout_centerVertical="true"
             android:background="@drawable/calendar_background"
             android:foreground="?attr/selectableItemBackgroundBorderless"/>
 
-    </LinearLayout>
+        </RelativeLayout>
 
 </LinearLayout>
 
-</LinearLayout>
 
  </ScrollView>
 

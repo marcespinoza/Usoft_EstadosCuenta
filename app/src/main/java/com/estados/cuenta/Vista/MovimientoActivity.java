@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
@@ -166,7 +167,7 @@ public class MovimientoActivity extends AppCompatActivity implements PdfInterfac
     @Override
     public void showSnackBar(String filename) {
             progressDialog.finishDialog();
-            final Snackbar snackbar = Snackbar.make(view, "PDF generado", Snackbar.LENGTH_LONG);
+            final Snackbar snackbar = Snackbar.make(view, "Documento generado", Snackbar.LENGTH_LONG);
             snackbar.setAction("ABRIR", new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -174,13 +175,18 @@ public class MovimientoActivity extends AppCompatActivity implements PdfInterfac
                     file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)+"/"+filename);
                     if(file.exists()) {
                         Intent target = new Intent(Intent.ACTION_VIEW);
-                        target.setDataAndType(Uri.fromFile(file), "application/pdf");
+                        if (Build.VERSION.SDK_INT >=  Build.VERSION_CODES.N) {
+                            target.setDataAndType(Uri.parse(file.toString()), "application/pdf");
+                        } else{
+                            target.setDataAndType(Uri.fromFile(file), "application/pdf");
+                        }
                         target.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
 
                         Intent intent = Intent.createChooser(target, "Open File");
                         try {
                             startActivity(intent);
                         } catch (ActivityNotFoundException e) {
+                            Log.i("EXCEPTION", e.getMessage());
                         }
                     }
                 }
