@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.animation.AnimationUtils;
@@ -25,6 +26,8 @@ import com.estados.cuenta.Presentador.LoginPresentador;
 import com.estados.cuenta.R;
 import com.google.android.material.button.MaterialButton;
 
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
 import java.text.SimpleDateFormat;
 
 import butterknife.BindView;
@@ -52,7 +55,7 @@ public class LoginActivity extends AppCompatActivity implements LoginInterface.V
     MaterialButton enviarConexion;
     ProgressBar progressBar;
     TextView errorEmpresa;
-    EditText empresaText;
+    EditText empresaText, claveText;
     Dialog dialog;
     SharedPreferences sharedPref;
 
@@ -60,10 +63,13 @@ public class LoginActivity extends AppCompatActivity implements LoginInterface.V
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_activity);
+        //---Empresa dialog--///
         dialog = new Dialog(this);
         dialog.setContentView(R.layout.custompopup);
+        //------------------------//
         progressBar = dialog.findViewById(R.id.progressBar);
         enviarConexion = dialog.findViewById(R.id.enviarempresa);
+        claveText = dialog.findViewById(R.id.clave);
         empresaText = dialog.findViewById(R.id.empresa);
         errorEmpresa = dialog.findViewById(R.id.textoError);
         errorEmpresa.setVisibility(View.INVISIBLE);
@@ -78,7 +84,9 @@ public class LoginActivity extends AppCompatActivity implements LoginInterface.V
             @Override
             public void onClick(View v) {
                 empresaText.setEnabled(true);
+                claveText.setEnabled(true);
                 empresaText.setText("");
+                claveText.setText("");
                 enviarConexion.setEnabled(true);
                 mostrarDialogoConexion();
             }
@@ -104,10 +112,6 @@ public class LoginActivity extends AppCompatActivity implements LoginInterface.V
         presentador.verificarUsuario(usuario, clave);
     }
 
-    public void clearPopup(){
-
-    }
-
 
     @Override
     public void mostrarExito(String usuari) {
@@ -126,9 +130,10 @@ public class LoginActivity extends AppCompatActivity implements LoginInterface.V
         if(b){
             dialog.dismiss();
         }else{
-            empresaText.startAnimation(AnimationUtils.loadAnimation(this, R.anim.shake));
+            claveText.startAnimation(AnimationUtils.loadAnimation(this, R.anim.shake));
             enviarConexion.setEnabled(true);
             empresaText.setEnabled(true);
+            claveText.setEnabled(true);
             errorEmpresa.setVisibility(View.VISIBLE);
             errorEmpresa.setText(mensaje);
         }
@@ -144,6 +149,47 @@ public class LoginActivity extends AppCompatActivity implements LoginInterface.V
         finish();
     }
 
+
+    public static String sha256(String base) {
+        try{
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hash = digest.digest(base.getBytes("UTF-8"));
+            StringBuffer hexString = new StringBuffer();
+
+            for (int i = 0; i < hash.length; i++) {
+                String hex = Integer.toHexString(0xff & hash[i]);
+                if(hex.length() == 1) hexString.append('0');
+                hexString.append(hex);
+            }
+            Log.i("CLAVE", hexString.toString());
+            return hexString.toString();
+        } catch(Exception ex){
+            throw new RuntimeException(ex);
+        }
+    }
+
+    public String MD5(String md5) {
+        try {
+            java.security.MessageDigest md = java.security.MessageDigest.getInstance("MD5");
+            byte[] array = md.digest(md5.getBytes("UTF-8"));
+            StringBuffer sb = new StringBuffer();
+            for (int i = 0; i < array.length; ++i) {
+                sb.append(Integer.toHexString((array[i] & 0xFF) | 0x100).substring(1,3));
+            }
+            return sb.toString();
+        } catch (java.security.NoSuchAlgorithmException e) {
+        } catch(UnsupportedEncodingException ex){
+        }
+        return null;
+    }
+
+    public boolean checkHash(String clave, String empresa){
+        if(clave.equals(sha256(MD5("usoft"+empresa)))){
+            return true;
+        }
+        return false;
+    }
+
     public void mostrarDialogoConexion(){
 
         enviarConexion.setOnClickListener(new View.OnClickListener() {
@@ -153,7 +199,12 @@ public class LoginActivity extends AppCompatActivity implements LoginInterface.V
                 progressBar.setVisibility(View.VISIBLE);
                 enviarConexion.setEnabled(false);
                 empresaText.setEnabled(false);
-                presentador.verificarEmpresa(empresaText.getText().toString());
+                claveText.setEnabled(false);
+                if(checkHash(claveText.getText().toString(), empresaText.getText().toString())){
+                   presentador.verificarEmpresa(empresaText.getText().toString());
+                }else{
+                    resultadoConexion(false, "Clave errónea");
+                }
             }
         });
         dialog.setOnKeyListener(new DialogInterface.OnKeyListener() {

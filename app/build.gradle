@@ -1,20 +1,29 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+        release {
+            storeFile file('F:\\Workana projects\\Estadosdecuenta\\usoft_estadocuenta.jks')
+            storePassword 'estadocuenta'
+            keyAlias = 'estadocuenta'
+            keyPassword 'estadocuenta'
+        }
+    }
     compileSdkVersion 29
     buildToolsVersion "29.0.3"
     defaultConfig {
-        applicationId "com.estados.cuenta"
+        applicationId "com.estado.cuenta"
         minSdkVersion 15
         targetSdkVersion 29
-        versionCode 5
-        versionName "1.5.1"
+        versionCode 8
+        versionName "1.8"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
     applicationVariants.all { variant ->
