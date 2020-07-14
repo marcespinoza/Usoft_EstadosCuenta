@@ -112,7 +112,6 @@ public class LoginActivity extends AppCompatActivity implements LoginInterface.V
         presentador.verificarUsuario(usuario, clave);
     }
 
-
     @Override
     public void mostrarExito(String usuari) {
         String usu = usuario.getText().toString();
@@ -161,7 +160,6 @@ public class LoginActivity extends AppCompatActivity implements LoginInterface.V
                 if(hex.length() == 1) hexString.append('0');
                 hexString.append(hex);
             }
-            Log.i("CLAVE", hexString.toString());
             return hexString.toString();
         } catch(Exception ex){
             throw new RuntimeException(ex);
