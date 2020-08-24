@@ -120,6 +120,7 @@ public class CuentaModelo implements CuentaInterface.CuentaModelo {
     public void getCliente(String cliente) {
         urlServidor = sharedPrefConexion.getString("host","");
         String empresa = sharedPrefConexion.getString("empresa","");
+        String usuario = sharedPref.getString("usuario","");
         String url = "http://"+urlServidor+":10701/api/index.php/api/getnrocuenta";
         OkHttpClient client = new OkHttpClient.Builder()
                 .connectTimeout(20, TimeUnit.SECONDS)
@@ -128,6 +129,7 @@ public class CuentaModelo implements CuentaInterface.CuentaModelo {
         RequestBody formBody = new FormBody.Builder()
                 .add("cuenta", cliente)
                 .add("empresa",empresa)
+                .add("usuario", usuario)
                 .build();
         Request request = new Request.Builder()
                 .url(url)
